@@ -1,14 +1,14 @@
-import meshio as m
+import meshio
 from abc import ABC, abstractmethod
+import numpy as np
 
 class point:
     '''class for point of x and y cord.
-    input: all the points in the mesh, cell points index '''
+    input: all the points in the mesh, cell points index'''
     def __init__(self, points, pointindex):
         self._point_index = pointindex
         self._x, self._y = points[pointindex][:2] #2D mesh
 
-    
     def __repr__(self): #Returning point desc.
         return f"Point(index={self._point_index}, x={self._x:.2f}, y={self._y:.2f})"
     
@@ -109,7 +109,7 @@ class triangle(cell): #triangle class, parent class: cell
         self._area = 0.5 * np.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1))
 
         
-class mesh:
+class Mesh:
     def __init__(self, msh):
         '''input: mesh
         reads in points and cells into lists that stores metadata'''

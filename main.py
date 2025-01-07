@@ -1,20 +1,20 @@
 from msh_classes import *
-import meshio as m
+import meshio
 import numpy as np
 
 if __name__ == "__main__":
     msh_name = "./input_data/bay.msh"
-    msh = m.read(msh_name)
+    msh = meshio.read(msh_name)
 
-    mesh_instance = mesh(msh)
-    mesh_instance.find_neighbors()
+    mesh = Mesh(msh)
+    mesh.find_neighbors()
 
-    #bay-point:
+    #oil spill-point:
     x, y = 0.45, 0.35
 
-    print(f"The point ({x}, {y}) is inside Triangle {mesh_instance.point_in_triangle(x, y)}")
+    print(f"The point ({x}, {y}) is inside {mesh.point_in_triangle(x, y)}")
 
-    print(f'The area of the triangle is {mesh_instance.point_in_triangle(x, y).area()}')
+    print(f'The area of the triangle is {mesh.point_in_triangle(x, y).area(mesh._points)}')
 
 
 # i = point_in_triangle(0.45, 0.35)
