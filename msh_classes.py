@@ -76,7 +76,7 @@ class triangle(cell): #triangle class, parent class: cell
         return f"Triangle {self._original_index}, Boundary: {self._is_boundary}, Neighbors: {self._neighbors}"
     
     def point_in_cell(self, x, y, mesh_points):
-        p1 = self._cell_points_id[0]
+        p1 = self._cell_points_id[0] #saves point
         p2 = self._cell_points_id[1]
         p3 = self._cell_points_id[2]
 
