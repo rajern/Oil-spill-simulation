@@ -9,7 +9,7 @@ if __name__ == "__main__":
     mesh_instance = mesh(msh)
     mesh_instance.find_neighbors()
 
-    #bay point:
+    #bay-point:
     x, y = 0.45, 0.35
 
     print(f"The point ({x}, {y}) is inside Triangle {mesh_instance.point_in_triangle(x, y)}")
