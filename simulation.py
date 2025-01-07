@@ -8,5 +8,4 @@ msh = m.read(msh_name)
 mesh_instance = mesh(msh)
 mesh_instance.find_neighbors()
 
-#initial point
-spill_point = [0.35, 0.45]
+

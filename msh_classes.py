@@ -52,7 +52,7 @@ class line(cell): #line class, parent class: cell
                     self._neighbors.append(other_cell._cell_index) #adds to list
                     self._is_boundary = True
                     
-                else len(shared_points) == 2:
+                elif len(shared_points) == 2:
                     self._neighbors.append(other_cell._cell_index) #adds to list
 
     def __str__(self): #prints info
