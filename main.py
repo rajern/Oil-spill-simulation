@@ -16,6 +16,8 @@ if __name__ == "__main__":
 
     print(f'The area of the triangle is {mesh.point_in_triangle(x, y).area(mesh._points)}')
 
+    print(f'The midpoint of the triangle is {mesh.store_midpoint()} ')
+
 
 # i = point_in_triangle(0.35, 0.45)
 # ngh = i._neighbors

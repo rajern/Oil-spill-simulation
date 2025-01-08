@@ -108,6 +108,17 @@ class triangle(cell): #triangle class, parent class: cell
 
         self._area = 0.5 * np.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1))
 
+    def midpoint(self, mesh_points):
+        p1 = self._cell_points_id[0]
+        p2 = self._cell_points_id[1]
+        p3 = self._cell_points_id[2]
+
+        x1,y1 = self.get_point_cord(p1, mesh_points)
+        x2,y2 = self.get_point_cord(p2, mesh_points)
+        x3,y3 = self.get_point_cord(p3, mesh_points)
+
+        return (x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3
+
         
 class Mesh:
     def __init__(self, msh):
@@ -146,6 +157,11 @@ class Mesh:
         for cell in self._cells:
             if isinstance(cell, triangle):
                 cell.area(self._cells, self._points)
+    
+    def store_midpoint(self):
+        for cell in self._cells:
+            if isinstance(cell, triangle):
+                cell.midpoint(self._points)
 
     def __str__(self):
         """Print neighbor info"""
