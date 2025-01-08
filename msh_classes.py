@@ -134,6 +134,7 @@ class Mesh:
         for cell_block in mesh_cells: 
             cell_type = cell_block.type  # Access the type of the cell (e.g., "triangle", "line")
             if cell_type == "vertex":
+                orginal_cell_id += 1
                 continue
             cell_data = cell_block.data  # Access the array of cell points
             """uses metadata to utilize cell factory for each cell type"""
