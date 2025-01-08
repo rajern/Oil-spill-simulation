@@ -74,7 +74,7 @@ class triangle(cell): #triangle class, parent class: cell
                         self._is_boundary = True
     
     def __str__(self): #prints info
-        return f"Triangle {self._original_index}, Boundary: {self._is_boundary}, Neighbors: {self._neighbors}, Area: {self._area:.2f}"
+        return f"Triangle {self._original_index}, Boundary: {self._is_boundary}, Neighbors: {self._neighbors}, Area: {self._area}"
     
     def point_in_cell(self, x, y, mesh_points):
         p1 = self._cell_points_id[0] #saves point
@@ -157,7 +157,7 @@ class Mesh:
     def store_area(self):
         for cell in self._cells:
             if isinstance(cell, triangle):
-                cell.area(self._cells, self._points)
+                cell.area(self._points)
     
     def store_midpoint(self):
         for cell in self._cells:

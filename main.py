@@ -8,15 +8,13 @@ if __name__ == "__main__":
 
     mesh = Mesh(msh)
     mesh.find_neighbors()
+    mesh.store_area()
 
     #oil spill-point:
     x, y = 0.35, 0.45
 
     print(f"The point ({x}, {y}) is inside {mesh.point_in_triangle(x, y)}")
 
-    print(f'The area of the triangle is {mesh.point_in_triangle(x, y).area(mesh._points)}')
-
-    print(f'The midpoint of the triangle is {mesh.store_midpoint()} ')
 
 
 # i = point_in_triangle(0.35, 0.45)
