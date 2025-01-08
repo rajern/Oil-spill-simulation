@@ -1,10 +1,10 @@
 from msh_classes import *
-import meshio
+import meshio as m
 import numpy as np
 
 if __name__ == "__main__":
     msh_name = "./input_data/bay.msh"
-    msh = meshio.read(msh_name)
+    msh = m.read(msh_name)
 
     mesh = Mesh(msh)
     mesh.find_neighbors()
