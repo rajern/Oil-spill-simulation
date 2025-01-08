@@ -66,7 +66,7 @@ class triangle(cell): #triangle class, parent class: cell
         for other_cell in all_cells: #checks all cells in mesh
             if self._cell_index != other_cell._cell_index: #checks diff. cell
                 shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) #hashes for pair points of cells
-                if len(shared_points) == 2: #if more or equal to 2 shared points, the othe cell is a neighbor
+                if len(shared_points) == 2: #if equal to 2 shared points, the othe cell is a neighbor
                     self._neighbors.append(other_cell._cell_index) #adds to list
                     
                     #boundary check

@@ -10,14 +10,14 @@ if __name__ == "__main__":
     mesh.find_neighbors()
 
     #oil spill-point:
-    x, y = 0.45, 0.35
+    x, y = 0.35, 0.45
 
     print(f"The point ({x}, {y}) is inside {mesh.point_in_triangle(x, y)}")
 
     print(f'The area of the triangle is {mesh.point_in_triangle(x, y).area(mesh._points)}')
 
 
-# i = point_in_triangle(0.45, 0.35)
+# i = point_in_triangle(0.35, 0.45)
 # ngh = i._neighbors
 # A_i = i.area()
 # V_i_l = #scaled normal of cell i ad edge e 
