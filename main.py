@@ -30,11 +30,9 @@ if __name__ == "__main__":
 
 # v = 0.5 * (v_i + v_ngh) #average velocity field at edge e
 
-# if np.dot(v, V_i_l) > 0:
-#     g(a, b, V_i_l, v) = a * np.dot(v, V_i_l)
-# else:
-#     g(a, b, V_i_l, v) = b * np.dot(v, V_i_l)
-
 # #flux from cell i to cell ngh
-
 # F_i_ngh = (-delta_t / A_i) * g * (u_i , u_ngh , V_i_l, v)
+#   if np.dot(v, V_i_l) > 0:
+#       g(a, b, V_i_l, v) = a * np.dot(v, V_i_l)
+#   else:
+#       g(a, b, V_i_l, v) = b * np.dot(v, V_i_l)
