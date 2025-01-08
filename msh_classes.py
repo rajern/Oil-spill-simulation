@@ -74,7 +74,7 @@ class triangle(cell): #triangle class, parent class: cell
                         self._is_boundary = True
     
     def __str__(self): #prints info
-        return f"Triangle {self._original_index}, Boundary: {self._is_boundary}, Neighbors: {self._neighbors}, Area: {self._area}"
+        return f"Triangle {self._original_index}, Boundary: {self._is_boundary}, Neighbors: {self._neighbors}, Area: {self._area:.2f}"
     
     def point_in_cell(self, x, y, mesh_points):
         p1 = self._cell_points_id[0] #saves point
@@ -112,7 +112,7 @@ class triangle(cell): #triangle class, parent class: cell
         p1 = self._cell_points_id[0]
         p2 = self._cell_points_id[1]
         p3 = self._cell_points_id[2]
-
+        
         x1,y1 = self.get_point_cord(p1, mesh_points)
         x2,y2 = self.get_point_cord(p2, mesh_points)
         x3,y3 = self.get_point_cord(p3, mesh_points)
@@ -134,7 +134,6 @@ class Mesh:
         for cell_block in mesh_cells: 
             cell_type = cell_block.type  # Access the type of the cell (e.g., "triangle", "line")
             if cell_type == "vertex":
-                orginal_cell_id += 1
                 continue
             cell_data = cell_block.data  # Access the array of cell points
             """uses metadata to utilize cell factory for each cell type"""
@@ -157,7 +156,7 @@ class Mesh:
     def store_area(self):
         for cell in self._cells:
             if isinstance(cell, triangle):
-                cell.area(self._points)
+                cell.area(self._cells, self._points)
     
     def store_midpoint(self):
         for cell in self._cells:
