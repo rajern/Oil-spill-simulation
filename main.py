@@ -16,6 +16,7 @@ if __name__ == "__main__":
     #oil spill-point:
     x, y = 0.35, 0.45
     mesh.initial_oil(x,y)
+    mesh.flow_vector()
 
     
 

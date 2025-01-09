@@ -28,6 +28,7 @@ class cell(ABC):
         self._midpoint = [] 
         self._area = 0
         self._u = 0
+        self._v = []
 
     @abstractmethod #all types of cell classes must have this func.
     def store_neighbors(self, all_cells):
@@ -82,7 +83,7 @@ class triangle(cell): #triangle class, parent class: cell
                         self._is_boundary = True
     
     def __str__(self): #prints info
-        return f"Triangle {self._original_index}, Midpoint: {self._midpoint} Initial oil: {self._u}"
+        return f"Triangle {self._original_index}, Midpoint: {self._midpoint} Initial oil: {self._u} Flow vector: {self._v}"
     
     def point_in_cell(self, x, y, mesh_points):
         x1,y1 = self._coordinates[0]
@@ -120,7 +121,10 @@ class triangle(cell): #triangle class, parent class: cell
         vector = np.array([x1-x, y1-y])
         norm = np.linalg.norm(vector)
         self._u = np.exp(-(norm**2/0.01))
-
+    
+    def v(self):
+        x, y = self._midpoint 
+        self._v = np.array([y-0.2*x, -x])
         
 class Mesh:
     def __init__(self, msh):
@@ -174,6 +178,11 @@ class Mesh:
         for cell in self._cells:
             if isinstance(cell, triangle):
                 cell.u_0(x,y)
+    
+    def flow_vector(self):
+        for cell in self._cells:
+            if isinstance(cell, triangle):
+                cell.v()
 
     def __str__(self):
         """Print neighbor info"""
