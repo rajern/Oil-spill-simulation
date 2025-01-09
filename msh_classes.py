@@ -1,6 +1,7 @@
 import meshio
 from abc import ABC, abstractmethod
 import numpy as np
+#kake
 
 class point:
     '''class for point of x and y cord.
