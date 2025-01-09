@@ -126,6 +126,26 @@ class triangle(cell): #triangle class, parent class: cell
     def v(self):
         x, y = self._midpoint 
         self._v = np.array([y-0.2*x, -x])
+
+    def normal(self):
+        
+
+    def g(u_i, u_ngh, norm, v):
+        """
+        u_i: amount of oil in cell i at time t_n
+        u_ngh: amount of oil in cell ngh at time t_n
+        norm: normal of cell i at edge e
+        v: velocity field at edge e
+        """
+    if np.dot(norm) > 0:
+        return self._u * np.dot(self._v , norm)
+    else:
+        return u_ngh * np.dot(self._v, norm)
+    
+def flux(u_i, u_ngh, norm, v, delta_t):
+    return (-delta_t / self._area) * g(u_i, u_ngh, norm, v)
+
+def u_t(u_i, flux)
         
 class Mesh:
     def __init__(self, msh):
