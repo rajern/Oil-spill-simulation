@@ -47,8 +47,8 @@ class cell(ABC):
         point_obj = mesh_points[point_id]
         return point_obj._x, point_obj._y
     
-    def get_point_coord
-        self._coordinates = [self.point_cord(point_id, mesh_points) for point_id in cell_points_id]
+    def get_point_coord(self, mesh_points):
+        self._coordinates = [self.point_coord(point_id, mesh_points) for point_id in self._cell_points_id]
         
 
 class line(cell): #line class, parent class: cell
@@ -82,16 +82,12 @@ class triangle(cell): #triangle class, parent class: cell
                         self._is_boundary = True
     
     def __str__(self): #prints info
-        return f"Triangle {self._original_index}, Boundary: {self._is_boundary}, Neighbors: {self._neighbors}, Area: {self._area}"
+        return f"Triangle {self._original_index}, Midpoint: {self._midpoint} Initial oil: {self._u}"
     
     def point_in_cell(self, x, y, mesh_points):
-        p1 = self._cell_points_id[0] #saves point
-        p2 = self._cell_points_id[1]
-        p3 = self._cell_points_id[2]
-
-        x1,y1 = self.get_point_cord(p1, mesh_points)#makes x, y values
-        x2,y2 = self.get_point_cord(p2, mesh_points)
-        x3,y3 = self.get_point_cord(p3, mesh_points)
+        x1,y1 = self._coordinates[0]
+        x2,y2 = self._coordinates[1]
+        x3,y3 = self._coordinates[2]
 
         def crossproduct(x1,y1,x2,y2,x3,y3):
             return (x2-x1)*(y3-y1) - (y2-y1)*(x3-x1)
@@ -106,24 +102,16 @@ class triangle(cell): #triangle class, parent class: cell
         return not (pos and neg)
     
     def area(self, mesh_points):
-        p1 = self._cell_points_id[0] #saves point
-        p2 = self._cell_points_id[1]
-        p3 = self._cell_points_id[2]
-
-        x1,y1 = self.get_point_cord(p1, mesh_points)
-        x2,y2 = self.get_point_cord(p2, mesh_points)
-        x3,y3 = self.get_point_cord(p3, mesh_points)
+        x1,y1 = self._coordinates[0]
+        x2,y2 = self._coordinates[1]
+        x3,y3 = self._coordinates[2]
 
         self._area = 0.5 * np.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1))
 
     def midpoint(self, mesh_points):
-        p1 = self._cell_points_id[0]
-        p2 = self._cell_points_id[1]
-        p3 = self._cell_points_id[2]
-
-        x1,y1 = self.get_point_cord(p1, mesh_points)
-        x2,y2 = self.get_point_cord(p2, mesh_points)
-        x3,y3 = self.get_point_cord(p3, mesh_points)
+        x1,y1 = self._coordinates[0]
+        x2,y2 = self._coordinates[1]
+        x3,y3 = self._coordinates[2]
 
         self._midpoint = [(x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3]
     
@@ -148,7 +136,6 @@ class Mesh:
         for cell_block in mesh_cells: 
             cell_type = cell_block.type  # Access the type of the cell (e.g., "triangle", "line")
             if cell_type == "vertex":
-                orginal_cell_id += 1
                 continue
             cell_data = cell_block.data  # Access the array of cell points
             """uses metadata to utilize cell factory for each cell type"""
@@ -157,10 +144,10 @@ class Mesh:
                 orginal_cell_id += 1
         return all_cells
     
-    def store_coordinates(self)
+    def store_coordinates(self):
         for cel in self._cells:
             if isinstance(cel, cell):
-                cel.get_point_coord()
+                cel.get_point_coord(self._points)
     
     def find_neighbors(self):
         """Find neighbors for cells"""

@@ -8,6 +8,8 @@ if __name__ == "__main__":
 
     mesh = Mesh(msh)
     #mesh.find_neighbors()
+
+    mesh.store_coordinates()
     #mesh.store_area()
     mesh.store_midpoint()
     
@@ -18,7 +20,7 @@ if __name__ == "__main__":
     
 
 
-    #print(f"The point ({x}, {y}) is inside {mesh.point_in_triangle(x, y)}")
+    print(f"{mesh._cells[189]}")
 
 
 
