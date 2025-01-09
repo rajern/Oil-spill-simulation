@@ -163,7 +163,7 @@ class Mesh:
     def store_area(self):
         for cell in self._cells:
             if isinstance(cell, triangle):
-                cell.area(self._points)
+                cell.area(self._cells, self._points)
     
     def store_midpoint(self):
         for cell in self._cells:
