@@ -7,16 +7,17 @@ if __name__ == "__main__":
     msh = m.read(msh_name)
 
     mesh = Mesh(msh)
-    #mesh.find_neighbors()
+    
 
     mesh.store_coordinates()
     #mesh.store_area()
     mesh.store_midpoint()
+    mesh.find_neighbors_and_normals()
     
     #oil spill-point:
-    x, y = 0.35, 0.45
-    mesh.initial_oil(x,y)
-    mesh.flow_vector()
+    #x, y = 0.35, 0.45
+    #mesh.initial_oil(x,y)
+    #mesh.flow_vector()
 
     
 

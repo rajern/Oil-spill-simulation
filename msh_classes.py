@@ -30,8 +30,9 @@ class cell(ABC):
         self._area = 0
         self._u = 0
         self._v = []
+        self._scaled_normals = []
 
-    @abstractmethod #all types of cell classes must have this func.
+    #@abstractmethod #all types of cell classes must have this func.
     def store_neighbors(self, all_cells):
         pass
 
@@ -69,22 +70,50 @@ class line(cell): #line class, parent class: cell
     def __str__(self): #prints info
         return f"Line {self._original_index}, Boundary: {self._is_boundary}, Neighbors: {self._neighbors}"
 
-
 class triangle(cell): #triangle class, parent class: cell
     #finds neighbors and stores in list
-    def store_neighbors(self, all_cells):
+    def store_neighbors_scaled_normal(self, all_cells, mesh_points):
         for other_cell in all_cells: #checks all cells in mesh
             if self._cell_index != other_cell._cell_index: #checks diff. cell
                 shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) #hashes for pair points of cells
                 if len(shared_points) == 2: #if equal to 2 shared points, the othe cell is a neighbor
                     self._neighbors.append(other_cell._cell_index) #adds to list
                     
+                    shared_points_list = list(shared_points)
+                    p1 = shared_points_list[0]
+                    p2 = shared_points_list[1]
+
+                    x1,y1 = self.point_coord(p1, mesh_points)
+                    x2,y2 = self.point_coord(p2, mesh_points)
+                    
+                    p1=[x1,y1]
+                    p2=[x2,y2]
+
+                    dx = x2 - x1
+                    dy = y2 - y1
+
+                    normal = [-dy,dx]
+
+                    e_vector = [p2[0] - p1[0], p2[1] - p1[1]]
+
+                    check_vector = [p1[0] - self._midpoint[0], p1[1] - self._midpoint[1]]
+
+                    dot_product = check_vector[0] * normal[0] + check_vector[1] * normal[1]
+                    
+                    if dot_product > 0:
+                        o_normal = normal / np.linalg.norm(normal)
+                        self._scaled_normals.append(o_normal * np.linalg.norm(e_vector))
+
+                    else:
+                        o_normal = normal / np.linalg.norm([dy,-dx])
+                        self._scaled_normals.append(o_normal * np.linalg.norm(e_vector))
+
                     #boundary check
                     if isinstance(other_cell, line): #checks if neighbor cell is a line
                         self._is_boundary = True
     
     def __str__(self): #prints info
-        return f"Triangle {self._original_index}, Midpoint: {self._midpoint} Initial oil: {self._u} Flow vector: {self._v}"
+        return f"Triangle {self._original_index}, Midpoint: {self._midpoint} Normals:{self._scaled_normals}"
     
     def point_in_cell(self, x, y, mesh_points):
         x1,y1 = self._coordinates[0]
@@ -127,7 +156,7 @@ class triangle(cell): #triangle class, parent class: cell
         x, y = self._midpoint 
         self._v = np.array([y-0.2*x, -x])
 
-    def normal(self):
+    
         
 
     def g(u_i, u_ngh, norm, v):
@@ -137,15 +166,15 @@ class triangle(cell): #triangle class, parent class: cell
         norm: normal of cell i at edge e
         v: velocity field at edge e
         """
-    if np.dot(norm) > 0:
-        return self._u * np.dot(self._v , norm)
-    else:
-        return u_ngh * np.dot(self._v, norm)
+        if np.dot(norm) > 0:
+            return self._u * np.dot(self._v , norm)
+        else:
+            return u_ngh * np.dot(self._v, norm)
     
 def flux(u_i, u_ngh, norm, v, delta_t):
     return (-delta_t / self._area) * g(u_i, u_ngh, norm, v)
 
-def u_t(u_i, flux)
+#def u_t(u_i, flux)
         
 class Mesh:
     def __init__(self, msh):
@@ -174,10 +203,12 @@ class Mesh:
             if isinstance(cel, cell):
                 cel.get_point_coord(self._points)
     
-    def find_neighbors(self):
+    def find_neighbors_and_normals(self):
         """Find neighbors for cells"""
         for current_cell in self._cells:
             current_cell.store_neighbors(self._cells)
+            if isinstance(current_cell, triangle):
+                current_cell.store_neighbors_scaled_normal(self._cells, self._points)
     
     def point_in_triangle(self, x,y):
         for cell in self._cells:
