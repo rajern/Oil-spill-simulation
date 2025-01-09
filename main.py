@@ -7,13 +7,18 @@ if __name__ == "__main__":
     msh = m.read(msh_name)
 
     mesh = Mesh(msh)
-    mesh.find_neighbors()
-    mesh.store_area()
-
+    #mesh.find_neighbors()
+    #mesh.store_area()
+    mesh.store_midpoint()
+    
     #oil spill-point:
     x, y = 0.35, 0.45
+    mesh.initial_oil(x,y)
 
-    print(f"The point ({x}, {y}) is inside {mesh.point_in_triangle(x, y)}")
+    
+
+
+    #print(f"The point ({x}, {y}) is inside {mesh.point_in_triangle(x, y)}")
 
 
 
@@ -36,3 +41,4 @@ if __name__ == "__main__":
 #       g(a, b, V_i_l, v) = a * np.dot(v, V_i_l)
 #   else:
 #       g(a, b, V_i_l, v) = b * np.dot(v, V_i_l)
+

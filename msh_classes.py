@@ -22,7 +22,12 @@ class cell(ABC):
         self._cell_points_id = cell_points_id
         self._neighbors = [] #empty list for neigbor cells to be stored
         self._is_boundary = False #boundary statement is false by default
+
+        self._coordinates = []
+        
+        self._midpoint = [] 
         self._area = 0
+        self._u = 0
 
     @abstractmethod #all types of cell classes must have this func.
     def store_neighbors(self, all_cells):
@@ -38,9 +43,12 @@ class cell(ABC):
         else:
             raise ValueError(f"Unknown cell type: {cell_type}")
         
-    def get_point_cord(self, point_id, mesh_points):
+    def point_coord(self, point_id, mesh_points):
         point_obj = mesh_points[point_id]
         return point_obj._x, point_obj._y
+    
+    def get_point_coord
+        self._coordinates = [self.point_cord(point_id, mesh_points) for point_id in cell_points_id]
         
 
 class line(cell): #line class, parent class: cell
@@ -81,7 +89,7 @@ class triangle(cell): #triangle class, parent class: cell
         p2 = self._cell_points_id[1]
         p3 = self._cell_points_id[2]
 
-        x1,y1 = self.get_point_cord(p1, mesh_points)
+        x1,y1 = self.get_point_cord(p1, mesh_points)#makes x, y values
         x2,y2 = self.get_point_cord(p2, mesh_points)
         x3,y3 = self.get_point_cord(p3, mesh_points)
 
@@ -117,7 +125,13 @@ class triangle(cell): #triangle class, parent class: cell
         x2,y2 = self.get_point_cord(p2, mesh_points)
         x3,y3 = self.get_point_cord(p3, mesh_points)
 
-        return (x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3
+        self._midpoint = [(x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3]
+    
+    def u_0(self, x, y):
+        x1, y1 = self._midpoint
+        vector = np.array([x1-x, y1-y])
+        norm = np.linalg.norm(vector)
+        self._u = np.exp(-(norm**2/0.01))
 
         
 class Mesh:
@@ -142,6 +156,11 @@ class Mesh:
                 orginal_cell_id += 1
         return all_cells
     
+    def store_coordinates(self)
+        for cel in self._cells:
+            if isinstance(cel, cell):
+                cel.get_point_coord()
+    
     def find_neighbors(self):
         """Find neighbors for cells"""
         for current_cell in self._cells:
@@ -162,6 +181,11 @@ class Mesh:
         for cell in self._cells:
             if isinstance(cell, triangle):
                 cell.midpoint(self._points)
+        
+    def initial_oil(self, x, y):
+        for cell in self._cells:
+            if isinstance(cell, triangle):
+                cell.u_0(x,y)
 
     def __str__(self):
         """Print neighbor info"""
