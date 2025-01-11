@@ -6,9 +6,9 @@ import numpy as np
 class point:
     '''class for point of x and y cord.
     input: all the points in the mesh, cell points index'''
-    def __init__(self, points, pointindex):
-        self._point_index = pointindex
-        self._x, self._y = points[pointindex][:2] #2D mesh
+    def __init__(self, points, point_index):
+        self._point_index = point_index
+        self._x, self._y = points[point_index][:2] #2D mesh
 
     def __repr__(self): #Returning point desc.
         return f"Point(index={self._point_index}, x={self._x:.2f}, y={self._y:.2f})"
@@ -19,7 +19,7 @@ class cell(ABC):
     input: cells id, cell points id, the orginal cell id'''
     def __init__(self, cell_index, cell_points_id, original_index):
         self._cell_index = cell_index
-        self._original_index = original_index  #
+        self._original_index = original_index  
         self._cell_points_id = cell_points_id
         self._neighbors = [] #empty list for neigbor cells to be stored
         self._is_boundary = False #boundary statement is false by default
