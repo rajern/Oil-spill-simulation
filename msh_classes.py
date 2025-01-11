@@ -46,7 +46,7 @@ class cell(ABC):
         else:
             raise ValueError(f"Unknown cell type: {cell_type}")
         
-    def point_coord(self, point_id, mesh_points):
+    def point_coord(self, point_id, mesh_points): #Method for converting points to x-, y- coordinates
         point_obj = mesh_points[point_id]
         return point_obj._x, point_obj._y
     
@@ -71,7 +71,7 @@ class line(cell): #line class, parent class: cell
         return f"Line {self._original_index}, Boundary: {self._is_boundary}, Neighbors: {self._neighbors}"
 
 class triangle(cell): #triangle class, parent class: cell
-    #finds neighbors and stores in list
+    #finds neighbors and corresponding scaled normal vectors, and stores in list
     def store_neighbors_scaled_normal(self, all_cells, mesh_points):
         for other_cell in all_cells: #checks all cells in mesh
             if self._cell_index != other_cell._cell_index: #checks diff. cell
@@ -79,24 +79,24 @@ class triangle(cell): #triangle class, parent class: cell
                 if len(shared_points) == 2: #if equal to 2 shared points, the othe cell is a neighbor
                     self._neighbors.append(other_cell._cell_index) #adds to list
                     
-                    shared_points_list = list(shared_points)
-                    p1 = shared_points_list[0]
+                    shared_points_list = list(shared_points) #converts to list
+                    p1 = shared_points_list[0] #defines points
                     p2 = shared_points_list[1]
 
-                    x1,y1 = self.point_coord(p1, mesh_points)
+                    x1,y1 = self.point_coord(p1, mesh_points) #gets x-, y- coordinates for points
                     x2,y2 = self.point_coord(p2, mesh_points)
                     
-                    p1=[x1,y1]
+                    p1=[x1,y1] #defines vectors
                     p2=[x2,y2]
 
-                    dx = x2 - x1
+                    dx = x2 - x1 
                     dy = y2 - y1
 
-                    normal = [-dy,dx]
+                    normal = [-dy,dx] #defines normal
 
-                    e_vector = [p2[0] - p1[0], p2[1] - p1[1]]
+                    e_vector = [p2[0] - p1[0], p2[1] - p1[1]] #defines vector for side
 
-                    check_vector = [p1[0] - self._midpoint[0], p1[1] - self._midpoint[1]]
+                    check_vector = [p1[0] - self._midpoint[0], p1[1] - self._midpoint[1]] #p-vector - x_mid-vector
 
                     dot_product = check_vector[0] * normal[0] + check_vector[1] * normal[1]
                     
