@@ -163,7 +163,7 @@ class Triangle(Cell): #triangle class, parent class: cell
 
     def up(self, delta_t):
         up = 0
-        for ngh, normal in self._neighbors, self._scaled_normals:
+        for ngh, normal in zip(self._neighbors, self._scaled_normals):
             v = 0.5 * (self._v + ngh.get_flowfield())
             up += up - delta_t / self._area * flux(self._u, ngh.get_amount_of_oil(), normal, v)
         self._u = self._u + up
