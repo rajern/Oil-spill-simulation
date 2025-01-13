@@ -51,6 +51,12 @@ class Cell(ABC):
     
     def get_point_coord(self, mesh_points):
         self._coordinates = [self.point_coord(point_id, mesh_points) for point_id in self._cell_points_id]
+
+    def get_amount_of_oil(self):
+        return self._u
+    
+    def get_flowfield(self):
+        return self._v
         
 
 class Line(Cell): #line class, parent class: cell
@@ -155,10 +161,15 @@ class Triangle(Cell): #triangle class, parent class: cell
         x, y = self._midpoint 
         self._v = np.array([y-0.2*x, -x])
 
-    
+    def up(delta_t):
+        up = 0
+        for ngh, normal in self._neighbors, self._scaled_normals:
+            v = 0.5 * (self._v + ngh.get_flowfield())
+            up += up - delta_t / self._area * flux(self._u, ngh.get_amount_of_oil(), self._scaled_normals, v)
+        self._u = self._u + up
         
 
-    def g(u_i, u_ngh, norm, v):
+    def flux(u_i, u_ngh, norm, v):
         """
         u_i: amount of oil in cell i at time t_n
         u_ngh: amount of oil in cell ngh at time t_n
@@ -170,8 +181,7 @@ class Triangle(Cell): #triangle class, parent class: cell
         else:
             return u_ngh * np.dot(self._v, norm)
     
-def flux(u_i, u_ngh, norm, v, delta_t):
-    return (-delta_t / self._area) * g(u_i, u_ngh, norm, v)
+
 
 #def u_t(u_i, flux)
         
@@ -234,8 +244,14 @@ class Mesh:
         for cell in self._cells:
             if isinstance(cell, Triangle):
                 cell.v()
+    
+    def update_oil(self, delta_t):
+        for cell in self._cells:
+            if isinstance(cell, Triangle):
+                cell.up(delta_t)
 
     def __str__(self):
         """Print neighbor info"""
         return "\n".join(str(cell) for cell in self._cells)
+    
 
