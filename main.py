@@ -10,6 +10,9 @@ if __name__ == "__main__":
     mesh.store_coordinates()
     mesh.store_midpoint()
     mesh.find_neighbors_and_normals()
+    mesh.flow_vector()
+    mesh.initial_oil()
+    mesh.store_area()
 
     print(f"{mesh._cells[189]}")
 
