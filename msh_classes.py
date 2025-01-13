@@ -161,25 +161,24 @@ class Triangle(Cell): #triangle class, parent class: cell
         x, y = self._midpoint 
         self._v = np.array([y-0.2*x, -x])
 
-    def up(delta_t):
+    def up(self, delta_t):
         up = 0
         for ngh, normal in self._neighbors, self._scaled_normals:
             v = 0.5 * (self._v + ngh.get_flowfield())
             up += up - delta_t / self._area * flux(self._u, ngh.get_amount_of_oil(), self._scaled_normals, v)
         self._u = self._u + up
         
-
-    def flux(u_i, u_ngh, norm, v):
-        """
-        u_i: amount of oil in cell i at time t_n
-        u_ngh: amount of oil in cell ngh at time t_n
-        norm: normal of cell i at edge e
-        v: velocity field at edge e
-        """
-        if np.dot(norm) > 0:
-            return self._u * np.dot(self._v , norm)
-        else:
-            return u_ngh * np.dot(self._v, norm)
+def flux(u_i, u_ngh, norm, v):
+    """
+    u_i: amount of oil in cell i at time t_n
+    u_ngh: amount of oil in cell ngh at time t_n
+    norm: normal of cell i at edge e
+    v: velocity field at edge e
+    """
+    if np.dot(norm) > 0:
+        return u_i * np.dot(v , norm)
+    else:
+        return u_ngh * np.dot(v, norm)
     
 
 
