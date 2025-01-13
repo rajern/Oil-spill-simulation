@@ -1,7 +1,7 @@
 import meshio
 from abc import ABC, abstractmethod
 import numpy as np
-#kake
+
 
 class Point:
     '''class for point of x and y cord.
@@ -82,7 +82,7 @@ class Triangle(Cell): #triangle class, parent class: cell
             if self._cell_index != other_cell._cell_index: #checks diff. cell
                 shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) #hashes for pair points of cells
                 if len(shared_points) == 2: #if equal to 2 shared points, the othe cell is a neighbor
-                    self._neighbors.append(other_cell._cell_index) #adds to list
+                    self._neighbors.append(other_cell) #adds to list
                     
                     shared_points_list = list(shared_points) #converts to list
                     p1 = shared_points_list[0] #defines points
@@ -175,14 +175,11 @@ def flux(u_i, u_ngh, norm, v):
     norm: normal of cell i at edge e
     v: velocity field at edge e
     """
-    if np.dot(norm) > 0:
+    if np.dot(v, norm) > 0:
         return u_i * np.dot(v , norm)
     else:
         return u_ngh * np.dot(v, norm)
-    
 
-
-#def u_t(u_i, flux)
         
 class Mesh:
     def __init__(self, msh):
