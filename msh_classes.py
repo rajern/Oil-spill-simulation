@@ -32,7 +32,7 @@ class Cell(ABC):
         self._v = []
         self._scaled_normals = []
 
-    #@abstractmethod #all types of cell classes must have this func.
+    #@abstractmethod #Requires all child classes of Cell to have this func, or it's not valid
     def store_neighbors(self, all_cells):
         pass
 
@@ -97,13 +97,13 @@ class Triangle(Cell): #triangle class, parent class: cell
 
                     check_vector = [p1[0] - self._midpoint[0], p1[1] - self._midpoint[1]] #p-vector - x_mid-vector
 
-                    dot_product = check_vector[0] * normal[0] + check_vector[1] * normal[1] #dot product of the normal and check-vector
+                    dot_product = check_vector[0] * normal[0] + check_vector[1] * normal[1]
                     
-                    if dot_product > 0: #if the dot product is > 0 then the normal points outwards
-                        o_normal = normal / np.linalg.norm(normal) #normal is converted to orthonormal
-                        self._scaled_normals.append(o_normal * np.linalg.norm(e_vector)) #the orthonormal is scaled by the length of e_vector
+                    if dot_product > 0:
+                        o_normal = normal / np.linalg.norm(normal)
+                        self._scaled_normals.append(o_normal * np.linalg.norm(e_vector))
 
-                    else: #if not, the normal is flipped
+                    else:
                         o_normal = normal / np.linalg.norm([dy,-dx])
                         self._scaled_normals.append(o_normal * np.linalg.norm(e_vector))
 
@@ -114,7 +114,7 @@ class Triangle(Cell): #triangle class, parent class: cell
     def __str__(self): #prints info
         return f"Triangle {self._original_index}, Midpoint: {self._midpoint} Normals:{self._scaled_normals}"
     
-    def point_in_cell(self, x, y, mesh_points): #redundant 
+    def point_in_cell(self, x, y, mesh_points):
         x1,y1 = self._coordinates[0]
         x2,y2 = self._coordinates[1]
         x3,y3 = self._coordinates[2]
@@ -131,21 +131,21 @@ class Triangle(Cell): #triangle class, parent class: cell
 
         return not (pos and neg)
     
-    def area(self, mesh_points): #calculates area of a triangle cell
-        x1,y1 = self._coordinates[0] #point 1
-        x2,y2 = self._coordinates[1] #point 2
-        x3,y3 = self._coordinates[2] #point 3
+    def area(self, mesh_points):
+        x1,y1 = self._coordinates[0]
+        x2,y2 = self._coordinates[1]
+        x3,y3 = self._coordinates[2]
 
-        self._area = 0.5 * np.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1)) #formula for area
+        self._area = 0.5 * np.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1))
 
-    def midpoint(self, mesh_points): #finds midpoint of a cell
-        x1,y1 = self._coordinates[0] #point 1
-        x2,y2 = self._coordinates[1] #point 2
-        x3,y3 = self._coordinates[2] #point 3
+    def midpoint(self, mesh_points):
+        x1,y1 = self._coordinates[0]
+        x2,y2 = self._coordinates[1]
+        x3,y3 = self._coordinates[2]
 
-        self._midpoint = [(x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3] #midpoint given as list
+        self._midpoint = [(x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3]
     
-    def u_0(self, x, y): #checks amount of oil in t=0
+    def u_0(self, x, y):
         x1, y1 = self._midpoint
         vector = np.array([x1-x, y1-y])
         norm = np.linalg.norm(vector)
