@@ -2,3 +2,4 @@ meshio
 numpy
 ABC
 abstractmethod
+opencv-python
