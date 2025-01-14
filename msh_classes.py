@@ -206,16 +206,15 @@ class Mesh:
         return all_cells
     
     def store_coordinates(self):
-        for cel in self._cells:
-            if isinstance(cel, Cell):
-                cel.get_point_coord(self._points)
+        for cell in self._cells:
+            cell.get_point_coord(self._points)
     
     def find_neighbors_and_normals(self):
         """Find neighbors for cells"""
-        for current_cell in self._cells:
-            current_cell.store_neighbors(self._cells)
-            if isinstance(current_cell, Triangle):
-                current_cell.store_neighbors_scaled_normal(self._cells, self._points)
+        for cell in self._cells:
+            cell.store_neighbors(self._cells)
+            if isinstance(cell, Triangle):
+                cell.store_neighbors_scaled_normal(self._cells, self._points)
     
     def point_in_triangle(self, x,y):
         for cell in self._cells:
