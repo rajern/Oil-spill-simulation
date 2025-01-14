@@ -24,7 +24,7 @@ if __name__ == "__main__":
 # Iterate through time steps and plot the mesh
 for timestep in range(20):
     # Update oil distribution
-    mesh.update_oil(delta_t=0.01)
+    mesh.update_oil(delta_t=0.003)
 
     # Create the plot
     plt.figure()
