@@ -155,7 +155,7 @@ class Triangle(Cell): #triangle class, parent class: cell
         x1, y1 = self._midpoint
         vector = np.array([x1-x, y1-y])
         norm = np.linalg.norm(vector)
-        self._u = np.exp(-1*(norm**2/0.01))
+        self._u = np.exp(-(norm**2/0.01))
     
     def v(self):
         x, y = self._midpoint 

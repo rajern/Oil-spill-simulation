@@ -16,7 +16,6 @@ if __name__ == "__main__":
     mesh.flow_vector()
     mesh.initial_oil(x, y)
     mesh.store_area()
-    mesh.update_oil(0.1)
 
     umax = max(cell.get_amount_of_oil() for cell in mesh._cells if isinstance(cell, Triangle))
     umin = min(cell.get_amount_of_oil() for cell in mesh._cells if isinstance(cell, Triangle))
@@ -24,7 +23,7 @@ if __name__ == "__main__":
 # Iterate through time steps and plot the mesh
 for timestep in range(20):
     # Update oil distribution
-    mesh.update_oil(delta_t=0.003)
+    mesh.update_oil(delta_t=0.001)
 
     # Create the plot
     plt.figure()
