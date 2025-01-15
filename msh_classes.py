@@ -94,13 +94,13 @@ class Triangle(Cell): #triangle class, parent class: cell
             p_j = self._coordinates[j]
             p_i = self._coordinates[i]
             e_vector = np.subtract(p_j, p_i)
-            normal = np.dot(rotation_matrix_90deg, e_vector)
+            normal = np.dot(rotation_matrix_90deg, e_vector) #[-e[1], e[0]]
             orthonormal = normal / np.linalg.norm(normal)
 
             check_vector = np.subtract(p_i, midpoint)
             scaled_normals = orthonormal * np.linalg.norm(e_vector)
             if np.dot(orthonormal,check_vector)<0:
-                scaled_normals = np.flip(self._scaled_normals)
+                scaled_normals = np.flip(scaled_normals)
             
             self._scaled_normals.append(scaled_normals)
 
