@@ -83,40 +83,29 @@ class Triangle(Cell): #triangle class, parent class: cell
                 shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) #hashes for pair points of cells
                 if len(shared_points) == 2: #if equal to 2 shared points, the othe cell is a neighbor
                     self._neighbors.append(other_cell) #adds to list
-                    
-                    shared_points_list = list(shared_points) #converts to list
-                    p1 = shared_points_list[0] #defines points
-                    p2 = shared_points_list[1]
-
-                    x1,y1 = self.point_coord(p1, mesh_points) #gets x-, y- coordinates for points
-                    x2,y2 = self.point_coord(p2, mesh_points)
-                    
-                    p1=[x1,y1] #defines vectors
-                    p2=[x2,y2]
-
-                    dx = x2 - x1 
-                    dy = y2 - y1
-
-                    normal = [-dy,dx] #defines normal
-
-                    e_vector = [p2[0] - p1[0], p2[1] - p1[1]] #defines vector for side
-
-                    check_vector = [p1[0] - self._midpoint[0], p1[1] - self._midpoint[1]] #p-vector - x_mid-vector
-
-                    dot_product = check_vector[0] * normal[0] + check_vector[1] * normal[1]
-                    
-                    if dot_product > 0:
-                        o_normal = normal / np.linalg.norm(normal)
-                        self._scaled_normals.append(o_normal * np.linalg.norm(e_vector))
-
-                    else:
-                        o_normal = normal / np.linalg.norm([dy,-dx])
-                        self._scaled_normals.append(o_normal * np.linalg.norm(e_vector))
-
-                    #boundary check
-                    if isinstance(other_cell, Line): #checks if neighbor cell is a line
-                        self._is_boundary = True
     
+    def scaled_normals(self):
+        pointer1 = [0,1,2]
+        pointer2 = [1,2,0]
+        midpoint = self._midpoint
+        rotation_matrix_90deg = np.matrix([[0,-1], [1,0]]) #[[cos 90   -sin90], [sin90    cos90]
+
+        for i,j in zip(pointer1,pointer2):
+            p_j = self._coordinates[j]
+            p_i = self._coordinates[i]
+            e_vector = np.subtract(p_j, p_i)
+            normal = np.dot(rotation_matrix_90deg, e_vector)
+            orthonormal = normal / np.linalg.norm(normal)
+
+            check_vector = np.subtract(p_i, midpoint)
+            scaled_normals = orthonormal * np.linalg.norm(e_vector)
+            if np.dot(orthonormal,check_vector)<0:
+                scaled_normals = np.flip(self._scaled_normals)
+            
+            self._scaled_normals.append(scaled_normals)
+
+
+
     def __str__(self): #prints info
         return f"Triangle {self._original_index}, Midpoint: {self._midpoint} Normals:{self._scaled_normals}"
     
@@ -252,4 +241,7 @@ class Mesh:
         """Print neighbor info"""
         return "\n".join(str(cell) for cell in self._cells)
     
-
+    def normal(self):
+        for cell in self._cells:
+            if isinstance(cell, Triangle):
+                cell.scaled_normals()
