@@ -158,17 +158,17 @@ class Triangle(Cell): #triangle class, parent class: cell
         self._u = self._u + up
 
 
-def flux(u_i, u_ngh, norm, v):
+def flux(u_i, u_ngh, normal, v):
     """
     u_i: amount of oil in cell i at time t_n
     u_ngh: amount of oil in cell ngh at time t_n
     norm: normal of cell i at edge e
     v: velocity field at edge e
     """
-    if np.dot(v, norm) > 0:
-        return u_i * np.dot(v , norm)
+    if np.dot(v, normal) > 0:
+        return u_i * np.dot(v , normal)
     else:
-        return u_ngh * np.dot(v, norm)
+        return u_ngh * np.dot(v, normal)
 
         
 class Mesh:
