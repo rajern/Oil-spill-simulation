@@ -77,12 +77,14 @@ class Line(Cell): #line class, parent class: cell
 
 class Triangle(Cell): #triangle class, parent class: cell
     #finds neighbors and corresponding scaled normal vectors, and stores in list
+
     def store_neighbors(self, all_cells):
         for other_cell in all_cells: #checks all cells in mesh
             if self._cell_index != other_cell._cell_index: #checks diff. cell
                 shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) #hashes for pair points of cells
                 if len(shared_points) == 2: #if equal to 2 shared points, the othe cell is a neighbor
-                    self._neighbors.append(other_cell) #adds to list
+                    shared_points=list(shared_points)
+                    self._neighbors.append({other_cell: shared_points}) #adds to list
     
     def scaled_normals(self):
         pointer1 = [0,1,2]
@@ -101,38 +103,25 @@ class Triangle(Cell): #triangle class, parent class: cell
             if np.dot(orthonormal,check_vector)<0:
                 scaled_normals = np.flip(scaled_normals)
             
-            self._scaled_normals.append(scaled_normals)
-
+            for k, ngh in enumerate(self._neighbors):
+                if np.isin(self._cell_points_id[i], np.ravel(ngh.values())) and np.isin(self._cell_points_id[j], np.ravel(ngh.values())):
+                    self._scaled_normals.append({list(ngh.keys())[k]: scaled_normals})
+                    print({list(ngh.keys())[k]: scaled_normals})
+                    
+            
 
 
     def __str__(self): #prints info
-        return f"Triangle {self._original_index}, Midpoint: {self._midpoint} Normals:{self._scaled_normals}"
+        return f"Triangle {self._original_index}, Oil: {self.get_amount_of_oil()} Normals:{self._scaled_normals} Neighbors:{self._neighbors} Velocity:{self.get_flowfield()}"
     
-    def point_in_cell(self, x, y, mesh_points):
-        x1,y1 = self._coordinates[0]
-        x2,y2 = self._coordinates[1]
-        x3,y3 = self._coordinates[2]
-
-        def crossproduct(x1,y1,x2,y2,x3,y3):
-            return (x2-x1)*(y3-y1) - (y2-y1)*(x3-x1)
-        
-        d1 = crossproduct(x,y, x1,y1, x2,y2)
-        d2 = crossproduct(x,y, x1,y1, x3,y3)
-        d3 = crossproduct(x,y, x2,y2, x3,y3)
-
-        pos = (d1<0) or (d2<0) or (d3<0)
-        neg = (d1>0) or (d2>0) or (d3>0)
-
-        return not (pos and neg)
-    
-    def area(self, mesh_points):
+    def area(self):
         x1,y1 = self._coordinates[0]
         x2,y2 = self._coordinates[1]
         x3,y3 = self._coordinates[2]
 
         self._area = 0.5 * np.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1))
 
-    def midpoint(self, mesh_points):
+    def midpoint(self):
         x1,y1 = self._coordinates[0]
         x2,y2 = self._coordinates[1]
         x3,y3 = self._coordinates[2]
@@ -143,19 +132,22 @@ class Triangle(Cell): #triangle class, parent class: cell
         x1, y1 = self._midpoint
         vector = np.array([x1-x, y1-y])
         norm = np.linalg.norm(vector)
+        
         self._u = np.exp(-(norm**2/0.01))
     
     def v(self):
         x, y = self._midpoint 
+        
         self._v = np.array([y-0.2*x, -x])
 
-    def up(self, delta_t):
+    def up(self, delta_t, mesh_cells):
         up = 0
-        for ngh, normal in zip(self._neighbors, self._scaled_normals):
+        for i, (ngh, ngh_norm) in enumerate(zip(self._neighbors, self._scaled_normals)):
             if isinstance(ngh, Line):
                 continue
-            v = 0.5 * (self._v + ngh.get_flowfield())
-            up += up - delta_t / self._area * flux(self._u, ngh.get_amount_of_oil(), normal, v)
+            v = 0.5 * (self._v + list(ngh.keys())[i]._v)
+            up += up - delta_t / self._area * flux(self._u,list(ngh.keys())[i]._u, list(ngh_norm.keys())[i], v)
+        
         self._u = self._u + up
         
 def flux(u_i, u_ngh, norm, v):
@@ -195,50 +187,47 @@ class Mesh:
     
     def store_coordinates(self):
         for cell in self._cells:
+            
             cell.get_point_coord(self._points)
     
     def find_neighbors(self):
         """Find neighbors for cells"""
         for cell in self._cells:
+            
             cell.store_neighbors(self._cells)
-    
-    def point_in_triangle(self, x,y):
-        for cell in self._cells:
-            if isinstance(cell, Triangle):
-                if cell.point_in_cell(x,y, self._points):
-                    return cell
     
     def store_area(self):
         for cell in self._cells:
             if isinstance(cell, Triangle):
-                cell.area(self._points)
+                
+                cell.area()
     
     def store_midpoint(self):
         for cell in self._cells:
             if isinstance(cell, Triangle):
-                cell.midpoint(self._points)
+                
+                cell.midpoint()
         
     def initial_oil(self, x, y):
         for cell in self._cells:
             if isinstance(cell, Triangle):
+                
                 cell.u_0(x,y)
     
     def flow_vector(self):
         for cell in self._cells:
             if isinstance(cell, Triangle):
+                
                 cell.v()
     
     def update_oil(self, delta_t):
         for cell in self._cells:
             if isinstance(cell, Triangle):
-                cell.up(delta_t)
-
-
-    def __str__(self):
-        """Print neighbor info"""
-        return "\n".join(str(cell) for cell in self._cells)
+                
+                cell.up(delta_t, self._cells)
     
     def normal(self):
         for cell in self._cells:
             if isinstance(cell, Triangle):
+                
                 cell.scaled_normals()
