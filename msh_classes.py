@@ -84,7 +84,7 @@ class Triangle(Cell): #triangle class, parent class: cell
                 shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) #hashes for pair points of cells
                 if len(shared_points) == 2: #if equal to 2 shared points, the othe cell is a neighbor
                     shared_points=list(shared_points)
-                    self._neighbors.append({other_cell: shared_points}) #adds to list
+                    self._neighbors.append({other_cell._original_index: shared_points}) #adds to list
     
     def scaled_normals(self):
         pointer1 = [0,1,2]
@@ -142,16 +142,22 @@ class Triangle(Cell): #triangle class, parent class: cell
         
         self._v = np.array([y-0.2*x, -x])
 
-    def up(self, delta_t):
+    def up(self, delta_t, mesh_cells):
         up = 0
-        for i, (ngh, ngh_norm) in enumerate(zip(self._neighbors, self._scaled_normals)):
-            if isinstance(ngh, Line):
-                continue
-            v = 0.5 * (self._v + list(ngh.keys())[i]._v)
-            up += up - delta_t / self._area * flux(self._u,list(ngh.keys())[i]._u, list(ngh_norm.keys())[i], v)
-        
+
+        for ngh_data in self._scaled_normals:
+            for ngh_cell_id, scaled_normal in ngh_data.items():
+                ngh_cell_id = int(ngh_cell_id)
+                if isinstance(mesh_cells[ngh_cell_id], Line):
+                    continue
+
+                v = 0.5 * (self._v + mesh_cells[ngh_cell_id]._v)  
+                flux_value = flux(self._u, mesh_cells[ngh_cell_id]._u, scaled_normal, v)
+                up += up - delta_t / self._area * flux_value
+            
         self._u = self._u + up
-        
+
+
 def flux(u_i, u_ngh, norm, v):
     """
     u_i: amount of oil in cell i at time t_n
@@ -226,7 +232,7 @@ class Mesh:
         for cell in self._cells:
             if isinstance(cell, Triangle):
                 
-                cell.up(delta_t)
+                cell.up(delta_t, self._cells)
     
     def normal(self):
         for cell in self._cells:
