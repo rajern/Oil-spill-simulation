@@ -77,7 +77,7 @@ class Line(Cell): #line class, parent class: cell
 
 class Triangle(Cell): #triangle class, parent class: cell
     #finds neighbors and corresponding scaled normal vectors, and stores in list
-    def store_neighbors_scaled_normal(self, all_cells, mesh_points):
+    def store_neighbors(self, all_cells, mesh_points):
         for other_cell in all_cells: #checks all cells in mesh
             if self._cell_index != other_cell._cell_index: #checks diff. cell
                 shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) #hashes for pair points of cells
@@ -88,13 +88,12 @@ class Triangle(Cell): #triangle class, parent class: cell
         pointer1 = [0,1,2]
         pointer2 = [1,2,0]
         midpoint = self._midpoint
-        rotation_matrix_90deg = np.matrix([[0,-1], [1,0]]) #[[cos 90   -sin90], [sin90    cos90]
 
         for i,j in zip(pointer1,pointer2):
             p_j = self._coordinates[j]
             p_i = self._coordinates[i]
             e_vector = np.subtract(p_j, p_i)
-            normal = np.dot(rotation_matrix_90deg, e_vector) #[-e[1], e[0]]
+            normal = [-e_vector[1], e_vector[0]] #[-e[1], e[0]]
             orthonormal = normal / np.linalg.norm(normal)
 
             check_vector = np.subtract(p_i, midpoint)
@@ -198,12 +197,10 @@ class Mesh:
         for cell in self._cells:
             cell.get_point_coord(self._points)
     
-    def find_neighbors_and_normals(self):
+    def find_neighbors(self):
         """Find neighbors for cells"""
         for cell in self._cells:
-            cell.store_neighbors(self._cells)
-            if isinstance(cell, Triangle):
-                cell.store_neighbors_scaled_normal(self._cells, self._points)
+            cell.store_neighbors(self._points)
     
     def point_in_triangle(self, x,y):
         for cell in self._cells:
