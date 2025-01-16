@@ -103,11 +103,13 @@ class Triangle(Cell): #triangle class, parent class: cell
             if np.dot(orthonormal,check_vector)<0:
                 scaled_normals = np.flip(scaled_normals)
             
-            for k, ngh in enumerate(self._neighbors):
-                if np.isin(self._cell_points_id[i], np.ravel(ngh.values())) and np.isin(self._cell_points_id[j], np.ravel(ngh.values())):
-                    self._scaled_normals.append({list(ngh.keys())[k]: scaled_normals})
-                    print({list(ngh.keys())[k]: scaled_normals})
-                    
+            for ngh in self._neighbors:
+                for neighbor_cell, shared_points in ngh.items():
+                    if np.isin(self._cell_points_id[i], shared_points) and np.isin(self._cell_points_id[j], shared_points):
+                        # Store the scaled normal vector with the neighbor cell as the key
+                        self._scaled_normals.append({neighbor_cell: scaled_normals})
+                        print({neighbor_cell: scaled_normals})  # print the scaled normal vector for debugging
+
             
 
 
@@ -140,7 +142,7 @@ class Triangle(Cell): #triangle class, parent class: cell
         
         self._v = np.array([y-0.2*x, -x])
 
-    def up(self, delta_t, mesh_cells):
+    def up(self, delta_t):
         up = 0
         for i, (ngh, ngh_norm) in enumerate(zip(self._neighbors, self._scaled_normals)):
             if isinstance(ngh, Line):
@@ -224,7 +226,7 @@ class Mesh:
         for cell in self._cells:
             if isinstance(cell, Triangle):
                 
-                cell.up(delta_t, self._cells)
+                cell.up(delta_t)
     
     def normal(self):
         for cell in self._cells:
