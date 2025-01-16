@@ -77,7 +77,7 @@ class Line(Cell): #line class, parent class: cell
 
 class Triangle(Cell): #triangle class, parent class: cell
     #finds neighbors and corresponding scaled normal vectors, and stores in list
-    def store_neighbors(self, all_cells, mesh_points):
+    def store_neighbors(self, all_cells):
         for other_cell in all_cells: #checks all cells in mesh
             if self._cell_index != other_cell._cell_index: #checks diff. cell
                 shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) #hashes for pair points of cells
@@ -200,7 +200,7 @@ class Mesh:
     def find_neighbors(self):
         """Find neighbors for cells"""
         for cell in self._cells:
-            cell.store_neighbors(self._points)
+            cell.store_neighbors(self._cells)
     
     def point_in_triangle(self, x,y):
         for cell in self._cells:
