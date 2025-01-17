@@ -82,31 +82,40 @@ class Triangle(Cell): #triangle class, parent class: cell
         for other_cell in all_cells: #checks all cells in mesh
             if self._original_index != other_cell._original_index: #checks diff. cell
                 shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) #hashes for pair points of cells
-                if len(shared_points) == 2: #if equal to 2 shared points, the othe cell is a neighbor
+                if len(shared_points) == 2: #if equal to 2 shared points, the other cell is a neighbor
                     shared_points=list(shared_points)
-                    self._neighbors.append({other_cell._original_index: shared_points}) #adds to list
+                    
+                    if not any(other_cell._original_index == ngh_cell.keys() for ngh_cell in self._neighbors):
+                        self._neighbors.append({other_cell._original_index: shared_points}) #adds to list
+                    
+                    if not any(self._original_index == ngh_cell.keys() for ngh_cell in other_cell._neighbors):
+                        other_cell._neighbors.append({self._original_index: shared_points})
+                    
+                    if len(self._neighbors) == 3:
+                        break
                     
     
     def scaled_normals(self):
-        pointer1 = [0,1,2]
-        pointer2 = [1,2,0]
+        pointer1 = [0, 1, 2]
+        pointer2 = [1, 2, 0]
         midpoint = self._midpoint
 
-        for i,j in zip(pointer1,pointer2):
+        for i, j in zip(pointer1, pointer2):
             p_j = self._coordinates[j]
             p_i = self._coordinates[i]
             e_vector = np.subtract(p_j, p_i)
-            normal = [e_vector[1], -e_vector[0]] #[e[1], -e[0]] = [dy, -dx]
+            normal = [e_vector[1], -e_vector[0]]  # [e[1], -e[0]] = [dy, -dx]
             orthonormal = normal / np.linalg.norm(normal)
 
             check_vector = np.subtract(p_i, midpoint)
             scaled_normals = orthonormal * np.linalg.norm(e_vector)
-            if np.dot(orthonormal,check_vector)<0:
+            if np.dot(orthonormal, check_vector) < 0:
                 scaled_normals = np.flip(scaled_normals)
             
             for ngh in self._neighbors:
                 for neighbor_cell, shared_points in ngh.items():
-                    if np.isin(self._cell_points_id[i], shared_points) and np.isin(self._cell_points_id[j], shared_points):
+                    if np.isin(self._cell_points_id[i], shared_points) \
+                        and np.isin(self._cell_points_id[j], shared_points):
                         # Store the scaled normal vector with the neighbor cell as the key
                         self._scaled_normals.append({neighbor_cell: scaled_normals})
                         print({neighbor_cell: scaled_normals})  # print the scaled normal vector for debugging
@@ -114,20 +123,20 @@ class Triangle(Cell): #triangle class, parent class: cell
             
 
 
-    def __str__(self): #prints info
+    def __str__(self):  # prints info
         return f"Triangle {self._original_index}, Oil: {self.get_amount_of_oil()} Normals:{self._scaled_normals} Neighbors:{self._neighbors} Velocity:{self.get_flowfield()}"
     
     def area(self):
-        x1,y1 = self._coordinates[0]
-        x2,y2 = self._coordinates[1]
-        x3,y3 = self._coordinates[2]
+        x1, y1 = self._coordinates[0]
+        x2, y2 = self._coordinates[1]
+        x3, y3 = self._coordinates[2]
 
         self._area = 0.5 * np.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1))
 
     def midpoint(self):
-        x1,y1 = self._coordinates[0]
-        x2,y2 = self._coordinates[1]
-        x3,y3 = self._coordinates[2]
+        x1, y1 = self._coordinates[0]
+        x2, y2 = self._coordinates[1]
+        x3, y3 = self._coordinates[2]
 
         self._midpoint = [(x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3]
     
@@ -183,7 +192,7 @@ class Mesh:
         """Reads cells metadata and stores in list"""
         all_cells = []
         orginal_cell_id = 0
-        for cell_block in mesh_cells: 
+        for cell_block in mesh_cells:
             cell_type = cell_block.type  # Access the type of the cell (e.g., "triangle", "line")
             if cell_type == "vertex":
                 continue
