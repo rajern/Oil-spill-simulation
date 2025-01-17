@@ -85,6 +85,7 @@ class Triangle(Cell): #triangle class, parent class: cell
                 if len(shared_points) == 2: #if equal to 2 shared points, the othe cell is a neighbor
                     shared_points=list(shared_points)
                     self._neighbors.append({other_cell._original_index: shared_points}) #adds to list
+                    
     
     def scaled_normals(self):
         pointer1 = [0,1,2]
