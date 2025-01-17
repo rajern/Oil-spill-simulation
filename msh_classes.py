@@ -63,14 +63,14 @@ class Line(Cell): #line class, parent class: cell
     #finds neighbors and stores in list
     def store_neighbors(self, all_cells):
         for other_cell in all_cells: #checks all cells in mesh
-            if self._cell_index != other_cell._cell_index: #ensures diff. cells
+            if self._original_index != other_cell._original_index: #ensures diff. cells
                 shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) #hashes for pair points of cells
                 if isinstance(other_cell, Line) and len(shared_points) == 1: #if more or equal to 1 shared point, the other cell is a neighbor
-                    self._neighbors.append(other_cell._cell_index) #adds to list
+                    self._neighbors.append(other_cell._original_index) #adds to list
                     self._is_boundary = True
                     
                 elif len(shared_points) == 2:
-                    self._neighbors.append(other_cell._cell_index) #adds to list
+                    self._neighbors.append(other_cell._original_index) #adds to list
 
     def __str__(self): #prints info
         return f"Line {self._original_index}, Boundary: {self._is_boundary}, Neighbors: {self._neighbors}"
@@ -80,7 +80,7 @@ class Triangle(Cell): #triangle class, parent class: cell
 
     def store_neighbors(self, all_cells):
         for other_cell in all_cells: #checks all cells in mesh
-            if self._cell_index != other_cell._cell_index: #checks diff. cell
+            if self._original_index != other_cell._original_index: #checks diff. cell
                 shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) #hashes for pair points of cells
                 if len(shared_points) == 2: #if equal to 2 shared points, the othe cell is a neighbor
                     shared_points=list(shared_points)
@@ -153,7 +153,7 @@ class Triangle(Cell): #triangle class, parent class: cell
 
                 v = 0.5 * (self._v + mesh_cells[ngh_cell_id]._v)  
                 flux_value = flux(self._u, mesh_cells[ngh_cell_id]._u, scaled_normal, v)
-                up += up - delta_t / self._area * flux_value
+                up -= delta_t / self._area * flux_value
             
         self._u = self._u + up
 
