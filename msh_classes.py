@@ -95,7 +95,7 @@ class Triangle(Cell): #triangle class, parent class: cell
             p_j = self._coordinates[j]
             p_i = self._coordinates[i]
             e_vector = np.subtract(p_j, p_i)
-            normal = [-e_vector[1], e_vector[0]] #[-e[1], e[0]]
+            normal = [e_vector[1], -e_vector[0]] #[e[1], -e[0]] = [dy, -dx]
             orthonormal = normal / np.linalg.norm(normal)
 
             check_vector = np.subtract(p_i, midpoint)
