@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import cv2  # requires opencv-python
 
 
-def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int):
+def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, box_coords: list = None):
     
     N = timesteps/nr_of_pics
 
@@ -36,6 +36,12 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int):
                 ax.add_patch(
                     plt.Polygon(vertices, color=plt.cm.viridis(normalized_u), edgecolor="black", alpha=0.9)
                 )
+        
+        if box_coords:
+            x1, x2 = box_coords[0]  # x bounds
+            y1, y2 = box_coords[1]  # y bounds
+            rectangle = plt.Rectangle((x1, y1), x2 - x1, y2 - y1, linewidth=2, edgecolor='red', facecolor='none')
+            ax.add_patch(rectangle)
 
         # Add labels to axes
         plt.xlabel("X-coordinate")
