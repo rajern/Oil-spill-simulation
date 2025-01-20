@@ -112,7 +112,7 @@ class Triangle(Cell): #triangle class, parent class: cell
                     if np.isin(self._cell_points_id[i], shared_points) and np.isin(self._cell_points_id[j], shared_points):
                         # Store the scaled normal vector with the neighbor cell as the key
                         self._scaled_normals.append({neighbor_cell: scaled_normals})
-                        print({neighbor_cell: scaled_normals})  # print the scaled normal vector for debugging
+                        # print({neighbor_cell: scaled_normals})  # print the scaled normal vector for debugging
 
             
 
@@ -241,5 +241,4 @@ class Mesh:
     def normal(self):
         for cell in self._cells:
             if isinstance(cell, Triangle):
-                
                 cell.scaled_normals()
