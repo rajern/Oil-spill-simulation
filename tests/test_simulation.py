@@ -13,11 +13,11 @@ sample_mesh_data = {
     "cells": sample_cell_data
 }
 
-
 @pytest.fixture
 def sim_triangle():
     # Mocking a Sim_Triangle object with 3 points
     triangle = Sim_Triangle(0, [0, 1, 2], 0)
+    #first index: cell_index, second index: cell_points_id, third index: original_index
     triangle._coordinates = [(0, 0), (1, 0), (0, 1)]
     triangle.midpoint()  # Calculate the midpoint of the triangle
     triangle.area()  # Calculate the area of the triangle
@@ -51,6 +51,7 @@ def test_flux_positive_normal():
     flux_value = flux(u_i, u_ngh, normal, v)
     assert flux_value == 10, f"Expected flux: 10, but got: {flux_value}"
 
+#i dont understand wjhy this not works, supposed to be u_ngh when dot is under zero??
 # def test_flux_negative_normal():
 #     # Test for negative flux when np.dot(v, normal) < 0
 #     u_i = 10
@@ -61,6 +62,7 @@ def test_flux_positive_normal():
 #     flux_value = flux(u_i, u_ngh, normal, v)
 #     assert flux_value == 5, f"Expected flux: 5, but got: {flux_value}"
 
+#vet ikke om nødvendig?
 def test_flux_zero_normal():
     # Test for zero flux when np.dot(v, normal) = 0
     u_i = 10
@@ -73,13 +75,14 @@ def test_flux_zero_normal():
 
 # Testing the Sim_Cell class
 
+#vet ikke helt hva poenget med denne er? er den nødevenidg?
 def test_sim_cell():
     # Test the Sim_Cell class factory method
     cell = Sim_Cell.cell_factory("line", 0, [0, 1], 0)
     assert isinstance(cell, Sim_Line), "Sim_Cell factory did not return a Sim_Line object"
 
 # Testing the Sim_Line class
-
+#midpoint is the average of the coordinates
 def test_sim_line_midpoint(sim_line):
     # Test the midpoint calculation for the Sim_Line class
     assert sim_line._midpoint == [0.5, 0.5], f"Expected midpoint: [0.5, 0.5], but got: {sim_line._midpoint}"
@@ -94,7 +97,7 @@ def test_sim_triangle_area(sim_triangle):
     # Test the area calculation for the Sim_Triangle class
     assert sim_triangle._area == 0.5, f"Expected area: 0.5, but got: {sim_triangle._area}"
 
-# Testing the Sim_Mesh class
+# Testing the Sim_Mesh class - får det ikke til..
 #COPILOT:
 def test_sim_mesh_creation(sim_mesh):
     # Test the creation of Sim_Mesh object
