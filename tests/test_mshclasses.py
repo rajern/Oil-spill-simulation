@@ -1,5 +1,8 @@
 import pytest
 from packages.simulation.msh_classes import Point, Cell, Line, Triangle, Mesh
+# får heller ikke til å teste mesh classen her.. 
+# og må velge om man skal starte med å sette fixtures som nedereste del av koden gjør.
+
 
 # Testing the Point class
 sample_points = [(1, 2), (2, 3), (3, 4), (4, 5)]  # This simulates mesh points
