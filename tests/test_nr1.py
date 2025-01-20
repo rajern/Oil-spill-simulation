@@ -1,5 +1,5 @@
 import pytest
-from computational-mesh.msh_classes import Point
+from computational_mesh.msh_classes import Point
 
 # Sample mesh data for testing
 sample_points = [(1, 2), (3, 4), (5, 6)]  # This simulates mesh points, where each tuple is (x, y)
