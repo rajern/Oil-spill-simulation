@@ -1,10 +1,19 @@
 import meshio
 from abc import ABC, abstractmethod
+"""
+This file consists of the classes Point, Cell, Line and Triangle.
+The Point class is a class for the points in the mesh.
+The Cell class is an abstract class for the cells in the mesh.
+The Line class is a class for the line cells in the mesh.
+The Triangle class is a class for the triangle cells in the mesh.
+The Mesh class is a class for the mesh.
 
+"""
 
 class Point:
-    '''class for point of x and y cord.
-    input: all the points in the mesh, cell points index'''
+    '''
+    Class for point of x and y cord.
+    Input: all the points in the mesh, cell points index'''
     def __init__(self, points, point_index):
         self._point_index = point_index
         self._x, self._y = points[point_index][:2] #2D mesh
@@ -14,8 +23,9 @@ class Point:
     
 
 class Cell(ABC):
-    '''class for cells
-    input: cells id, cell points id, the orginal cell id'''
+    '''
+    Class for cells. A parent class for line and triangle.
+    Input: cells id, cell points id, the orginal cell id'''
     def __init__(self, cell_index, cell_points_id, original_index):
         self._cell_index = cell_index
         self._original_index = original_index  
@@ -48,8 +58,13 @@ class Cell(ABC):
         self._coordinates = [self.point_coord(point_id, mesh_points) for point_id in self._cell_points_id]
         
 
-class Line(Cell): #line class, parent class: cell
-    #finds neighbors and stores in list
+class Line(Cell): 
+    """
+    Class for line cells. Inherits from its parents class; Cell.
+    Input: cells id, cell points id, the orginal cell id
+    Finds neighbors and stores in list.
+    """
+
     def store_neighbors(self, all_cells):
         for other_cell in all_cells: #checks all cells in mesh
             if self._original_index != other_cell._original_index: #ensures diff. cells
@@ -64,8 +79,12 @@ class Line(Cell): #line class, parent class: cell
     def __str__(self): #prints info
         return f"Line {self._original_index}, Boundary: {self._is_boundary}, Neighbors: {self._neighbors}"
 
-class Triangle(Cell): #triangle class, parent class: cell
-    #finds neighbors and corresponding scaled normal vectors, and stores in list
+class Triangle(Cell): 
+    """
+    Class for triangle cells. Inherits from its parents class; Cell. 
+    Input: cells id, cell points id, the orginal cell id
+    Finds neighbors and stores in list.
+    """
 
     def store_neighbors(self, all_cells):
         for other_cell in all_cells: #checks all cells in mesh
@@ -84,13 +103,18 @@ class Triangle(Cell): #triangle class, parent class: cell
         
 class Mesh:
     def __init__(self, msh):
-        '''input: mesh
-        reads in points and cells into lists that stores metadata'''
+        '''
+        Input: meshfile
+        Reads in points and cells into lists that stores metadata
+        '''
         self._points = [Point(msh.points, i) for i in range(len(msh.points))]
         self._cells = self._create_cells(msh.cells)
     
     def _create_cells(self, mesh_cells):
-        """Reads cells metadata and stores in list"""
+        """
+        Reads cells metadata and stores in list
+        Input: mesh cells
+        """
         all_cells = []
         orginal_cell_id = 0
         for cell_block in mesh_cells: 
@@ -105,12 +129,17 @@ class Mesh:
         return all_cells
     
     def store_coordinates(self):
+        """
+        Store coordinates for the cell-ids
+        """
         for cell in self._cells:
             
             cell.get_point_coord(self._points)
     
     def find_neighbors(self):
-        """Find neighbors for cells"""
+        """
+        Find neighbors for cells
+        """
         for cell in self._cells:
             
             cell.store_neighbors(self._cells)

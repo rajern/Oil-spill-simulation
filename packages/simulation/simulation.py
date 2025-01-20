@@ -1,12 +1,17 @@
 from .msh_classes import Cell, Line, Triangle, Mesh
 import numpy as np
+"""
+Class used for the simulation of the cells. 
+It inherits from its parents class; Cell from the msh_classes file.
+"""
 
 def flux(u_i, u_ngh, normal, v):
     """
-    u_i: amount of oil in cell i at time t_n
-    u_ngh: amount of oil in cell ngh at time t_n
-    norm: normal of cell i at edge e
-    v: velocity field at edge e
+    Calculates the flux value between two cells. Variables:
+        u_i: amount of oil in cell i at time t_n
+        u_ngh: amount of oil in cell ngh at time t_n
+        norm: normal of cell i at edge e
+        v: velocity field at edge e
     """
     if np.dot(v, normal) > 0:
         return u_i * np.dot(v , normal)
@@ -14,7 +19,10 @@ def flux(u_i, u_ngh, normal, v):
         return u_ngh * np.dot(v, normal)
 
 class Sim_Cell(Cell):
-    
+    """
+    Class for simulation cells. Inherits from its parents class; Cell from the msh_classes file.
+    It stores the midpoint, area, oil amount, velocity, and scaled normals.
+    """
     def __init__(self, cell_index, cell_points_id, original_index):
         super().__init__(cell_index, cell_points_id, original_index)
 
@@ -44,7 +52,9 @@ class Sim_Cell(Cell):
             raise ValueError(f"Unknown cell type: {cell_type}")
 
 class Sim_Line(Sim_Cell, Line):
-    
+    """
+    Class for simulation line cells. Inherits from its parents class; Line and Sim_Cell.
+    """
     def midpoint(self):
         x1,y1 = self._coordinates[0]
         x2,y2 = self._coordinates[1]
