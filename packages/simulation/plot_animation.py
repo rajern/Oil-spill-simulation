@@ -1,8 +1,9 @@
 import os
 import matplotlib.pyplot as plt
-import cv2 # requires opencv-python
+import cv2  # requires opencv-python
 
-def plot(mesh, destination_folder:str, nr_of_pics:int, timesteps:int):
+
+def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int):
     
     N = timesteps/nr_of_pics
 
@@ -21,7 +22,7 @@ def plot(mesh, destination_folder:str, nr_of_pics:int, timesteps:int):
 
         # Plot each triangle with its corresponding color
         for cell in mesh._cells:
-            if isinstance(cell, Triangle):
+            if isinstance(cell, Sim_Triangle):
                 # Get triangle vertices
                 vertices = np.array(cell._coordinates)
 
@@ -55,15 +56,16 @@ def plot(mesh, destination_folder:str, nr_of_pics:int, timesteps:int):
 
         # Create the plot
 
-def animation(folder, img_name, nr_of_pics)
+
+def animation(folder: str, img_name: str, nr_of_pics: int):
     # Get the list of image files in the directory
-    images = [f"{folder}/{img_name}{i}.png" for i in range(0,nr_of_pics)]
+    images = [f"{folder}/{img_name}{i}.png" for i in range(0, nr_of_pics)]
     # determine dimension from first image
     frame = cv2.imread(images[0])
     height, width, layers = frame.shape
-    ## Define the codec and create a VideoWriter object
-    fourcc = cv2.VideoWriter_fourcc(*'DIVX') # or 'XVID', 'DIVX', 'mp4v' etc.
-    video = cv2.VideoWriter("video.AVI", fourcc, 5, (width, height)) # 5 frames per second
+    # Define the codec and create a VideoWriter object
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')  # or 'XVID', 'DIVX', 'mp4v' etc.
+    video = cv2.VideoWriter("video.AVI", fourcc, 5, (width, height))  # 5 frames per second
     for image in images:
         video.write(cv2.imread(image))
         cv2.destroyAllWindows()

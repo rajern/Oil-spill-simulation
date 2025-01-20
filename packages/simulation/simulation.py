@@ -1,4 +1,4 @@
-from .msh_classes import *
+from .msh_classes import Cell, Line, Triangle, Mesh
 import numpy as np
 
 def flux(u_i, u_ngh, normal, v):
@@ -58,16 +58,16 @@ class Sim_Triangle(Sim_Cell, Triangle):
         pointer2 = [1,2,0]
         midpoint = self._midpoint
 
-        for i,j in zip(pointer1,pointer2):
+        for i,j in zip(pointer1, pointer2):
             p_j = self._coordinates[j]
             p_i = self._coordinates[i]
             e_vector = np.subtract(p_j, p_i)
-            normal = [e_vector[1], -e_vector[0]] #[e[1], -e[0]] = [dy, -dx]
+            normal = [e_vector[1], -e_vector[0]]  # [e[1], -e[0]] = [dy, -dx]
             orthonormal = normal / np.linalg.norm(normal)
 
             check_vector = np.subtract(p_i, midpoint)
             scaled_normals = orthonormal * np.linalg.norm(e_vector)
-            if np.dot(orthonormal,check_vector)<0:
+            if np.dot(orthonormal, check_vector) < 0:
                 scaled_normals = np.flip(scaled_normals)
             
             for ngh in self._neighbors:
@@ -78,20 +78,21 @@ class Sim_Triangle(Sim_Cell, Triangle):
                         print({neighbor_cell: scaled_normals})  # print the scaled normal vector for debugging
 
 
-    def __str__(self): #prints info
-        return f"Triangle {self._original_index}, Oil: {self.get_amount_of_oil()} Normals:{self._scaled_normals} Neighbors:{self._neighbors} Velocity:{self.get_flowfield()}"
+    def __str__(self):  # prints info
+        return f"Triangle {self._original_index}, Oil: {self.get_amount_of_oil()}\
+             Normals:{self._scaled_normals} Neighbors:{self._neighbors} Velocity:{self.get_flowfield()}"
     
     def area(self):
-        x1,y1 = self._coordinates[0]
-        x2,y2 = self._coordinates[1]
-        x3,y3 = self._coordinates[2]
+        x1, y1 = self._coordinates[0]
+        x2, y2 = self._coordinates[1]
+        x3, y3 = self._coordinates[2]
 
         self._area = 0.5 * np.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1))
 
     def midpoint(self):
-        x1,y1 = self._coordinates[0]
-        x2,y2 = self._coordinates[1]
-        x3,y3 = self._coordinates[2]
+        x1, y1 = self._coordinates[0]
+        x2, y2 = self._coordinates[1]
+        x3, y3 = self._coordinates[2]
 
         self._midpoint = [(x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3]
     
@@ -148,7 +149,7 @@ class Sim_Mesh(Mesh):
         for cell in self._cells:
             if isinstance(cell, Sim_Triangle):
                 
-                cell.u_0(x,y)
+                cell.u_0(x, y)
     
     def flow_vector(self):
         for cell in self._cells:
