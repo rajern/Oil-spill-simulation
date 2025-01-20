@@ -178,7 +178,7 @@ class Sim_Mesh(Mesh):
                 f.write(f"Cell type: {type(cell).__name__}\n")
 
                 f.write("Coordinates: ")
-                f.write(", ".join([f"({coord[0]:.2f}, {coord[1]:.2f})" for coord in cell._coordinates]))
+                f.write(", ".join([f"({coord[0]}, {coord[1]})" for coord in cell._coordinates]))
                 f.write("\n")
             
                 if cell._neighbors:
