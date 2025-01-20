@@ -108,8 +108,6 @@ class Sim_Triangle(Sim_Cell, Triangle):
         for ngh_data in self._scaled_normals:
             for ngh_cell_id, scaled_normal in ngh_data.items():
                 ngh_cell_id = int(ngh_cell_id)
-                if isinstance(mesh_cells[ngh_cell_id], Line):
-                    continue
 
                 v = 0.5 * (self._v + mesh_cells[ngh_cell_id]._v)  
                 flux_value = flux(self._u, mesh_cells[ngh_cell_id]._u, scaled_normal, v)
@@ -143,9 +141,8 @@ class Sim_Mesh(Mesh):
     
     def store_midpoint(self):
         for cell in self._cells:
-            if isinstance(cell, Sim_Triangle):
-                
-                cell.midpoint()
+            
+            cell.midpoint()
         
     def initial_oil(self, x, y):
         for cell in self._cells:
@@ -155,9 +152,8 @@ class Sim_Mesh(Mesh):
     
     def flow_vector(self):
         for cell in self._cells:
-            if isinstance(cell, Sim_Triangle):
-                
-                cell.v()
+                          
+            cell.v()
     
     def update_oil(self, delta_t):
         for cell in self._cells:
