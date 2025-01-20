@@ -8,14 +8,11 @@ sample_cell_data = [
     {"type": "line", "data": [[0, 1]]},
     {"type": "triangle", "data": [[0, 1, 2]]}
 ]  # Mock cell data with line and triangle cells
+sample_mesh_data = {
+    "points": sample_points,
+    "cells": sample_cell_data
+}
 
-@pytest.fixture
-def sim_mesh():
-    # Creating a Sim_Mesh object using mock data
-    mesh = Sim_Mesh(sample_cell_data)
-    mesh.store_area()  # Calculate areas
-    mesh.store_midpoint()  # Calculate midpoints
-    return mesh
 
 @pytest.fixture
 def sim_triangle():
@@ -34,6 +31,13 @@ def sim_line():
     line.midpoint()  # Calculate the midpoint of the line
     return line
 
+@pytest.fixture
+def sim_mesh():
+    # Creating a Sim_Mesh object using mock data
+    mesh = Sim_Mesh(sample_mesh_data)
+    mesh.store_area()  # Calculate areas
+    mesh.store_midpoint()  # Calculate midpoints
+    return mesh
 
 # Testing the flux function
 
@@ -92,9 +96,9 @@ def test_sim_triangle_area(sim_triangle):
 
 # Testing the Sim_Mesh class
 #COPILOT:
-# def test_sim_mesh_creation(sim_mesh):
-#     # Test the creation of Sim_Mesh object
-#     assert len(sim_mesh._cells) == 2, f"Expected 2 cells, but got: {len(sim_mesh._cells)}"
+def test_sim_mesh_creation(sim_mesh):
+    # Test the creation of Sim_Mesh object
+    assert len(sim_mesh._cells) == 2, f"Expected 2 cells, but got: {len(sim_mesh._cells)}"
 
 # def test_sim_mesh_initial_oil(sim_mesh):
 #     # Test the initial oil distribution calculation for the Sim_Mesh class
@@ -136,6 +140,43 @@ def test_sim_triangle_area(sim_triangle):
 #     initial_u = sim_mesh._cells[0]._u  # Initial oil value of the first cell
 #     sim_mesh.update_oil(delta_t)
 #     assert sim_mesh._cells[0]._u != initial_u, f"Oil amount should be updated, but it stayed the same"
+import pytest
+from packages.simulation.simulation import Sim_Mesh, Sim_Cell, Sim_Line, Sim_Triangle
+
+def test_create_cells_length(sim_mesh):
+    # Test the _create_cells method to check the correct number of cells
+    created_cells = sim_mesh._create_cells(sample_mesh_data)
+    assert len(created_cells) == 2  # Assert that 2 cells were created
+
+def test_create_cells_first_type(sim_mesh):
+    # Test the first created cell type
+    created_cells = sim_mesh._create_cells(sample_cell_data)
+    assert isinstance(created_cells[0], Sim_Line)  # Assert first cell is of type Sim_Line
+
+def test_create_cells_second_type(sim_mesh):
+    # Test the second created cell type
+    created_cells = sim_mesh._create_cells(sample_cell_data)
+    assert isinstance(created_cells[1], Sim_Triangle)  # Assert second cell is of type Sim_Triangle
+
+def test_create_cells_first_cell_index(sim_mesh):
+    # Test the cell index of the first cell
+    created_cells = sim_mesh._create_cells(sample_cell_data)
+    assert created_cells[0]._cell_index == 0  # Assert first cell index is 0
+
+def test_create_cells_second_cell_index(sim_mesh):
+    # Test the cell index of the second cell
+    created_cells = sim_mesh._create_cells(sample_cell_data)
+    assert created_cells[1]._cell_index == 1  # Assert second cell index is 1
+
+def test_create_cells_first_cell_points(sim_mesh):
+    # Test the points of the first created cell
+    created_cells = sim_mesh._create_cells(sample_cell_data)
+    assert created_cells[0]._cell_points_id == [0, 1]  # Assert points of the first cell are [0, 1]
+
+def test_create_cells_second_cell_points(sim_mesh):
+    # Test the points of the second created cell
+    created_cells = sim_mesh._create_cells(sample_cell_data)
+    assert created_cells[1]._cell_points_id == [0, 1, 2]  # Assert points of the second cell are [0, 1, 2]
 
 
 def test_sim_cell_get_amount_of_oil():
