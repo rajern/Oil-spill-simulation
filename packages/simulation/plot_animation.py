@@ -48,11 +48,13 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int):
 
         # Close the plot to avoid memory issues
         plt.close()
+
+        print(f"Plot nr. {pic} of {nr_of_pics} has been plotted")
         
         # Update oil distribution
         for timestep in range(N):
             mesh.update_oil(delta_t=0.001)
-            print(mesh._cells[500]._u)
+            print(f"Simulation timestep {timestep} of {timesteps}")
 
         # Create the plot
 

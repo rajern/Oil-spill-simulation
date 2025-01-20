@@ -36,7 +36,6 @@ class Cell(ABC):
         self._coordinates = []
         
 
-
     #@abstractmethod #Requires all child classes of Cell to have this func, or it's not valid
     def store_neighbors(self, all_cells):
         pass
