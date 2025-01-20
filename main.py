@@ -9,7 +9,7 @@ if __name__ == "__main__":
     msh_name = "./input_data/bay.msh"
     msh = m.read(msh_name)
     mesh = Mesh(msh)
-    x, y = 0.35, 0.45
+   #x, y = 0.35, 0.45
     mesh.store_coordinates()
     mesh.store_midpoint()
     mesh.find_neighbors_and_normals()
