@@ -3,3 +3,4 @@ numpy
 ABC
 abstractmethod
 opencv-python
+toml
