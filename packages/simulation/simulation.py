@@ -167,3 +167,34 @@ class Sim_Mesh(Mesh):
             if isinstance(cell, Sim_Triangle):
                 
                 cell.scaled_normals()
+
+    def store_mesh_sim(self, filename = "restartfile.txt"):
+        with open(filename, "w") as f:
+            f.write("Mesh info:\n==========\n")
+
+            for cell in self._cells:
+                f.write(f"\nCell index: {cell._cell_index}\n")
+                f.write(f"Orginal cell index: {cell._original_index}\n")
+                f.write(f"Cell type: {type(cell).__name__}\n")
+
+                f.write("Coordinates: ")
+                f.write(", ".join([f"({coord[0]}, {coord[1]})" for coord in cell._coordinates]))
+                f.write("\n")
+            
+                if cell._neighbors:
+                    f.write(f"Neighbors: {', '.join(map(str, cell._neighbors))}\n")
+                else:
+                    f.write("Neighbors: None\n")
+
+                f.write(f"Velocity (v): {cell._v}\n")
+
+                if isinstance(cell, Sim_Cell):
+                    f.write(f"Midpoint: {cell._midpoint}\n")
+                    f.write(f"Area: {cell._area}\n")
+                    f.write(f"Oil Amount (u): {cell.get_amount_of_oil()}\n")
+                    f.write(f"Scaled Normals: {cell._scaled_normals}\n")
+
+                f.write("-" * 40 + "\n")
+
+        print(f"Data written to file {filename}")
+                
