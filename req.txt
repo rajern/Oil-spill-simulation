@@ -3,8 +3,4 @@ numpy
 ABC
 abstractmethod
 opencv-python
-<<<<<<< HEAD
 toml
-=======
-pytest
->>>>>>> 9f5a4f3fc77e7b9c9c48e3386de3bba64c4209b1
