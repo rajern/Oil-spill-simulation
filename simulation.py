@@ -1,4 +1,5 @@
 from msh_classes import *
+import numpy as np
 
 def flux(u_i, u_ngh, normal, v):
     """
@@ -13,16 +14,44 @@ def flux(u_i, u_ngh, normal, v):
         return u_ngh * np.dot(v, normal)
 
 class Sim_Cell(Cell):
-        
-    def __init__(self):
+    
+    def __init__(self, cell_index, cell_points_id, original_index):
+        super().__init__(cell_index, cell_points_id, original_index)
+
         self._midpoint = [] 
         self._area = 0
         self._u = 0
         self._v = []
         self._scaled_normals = []
-
-class Sim_Trianle(Triangle, Sim_Cell):
     
+    def v(self):
+        x, y = self._midpoint 
+        
+        self._v = np.array([y-0.2*x, -x])
+
+    def get_amount_of_oil(self):
+        return self._u
+
+
+    @staticmethod
+    def cell_factory(cell_type, cell_index, cell_points_id, original_index):
+        '''Overrides the base class's cell_factory to create simulation cells'''
+        if cell_type.lower() == "triangle":
+            return Sim_Triangle(cell_index, cell_points_id, original_index)  # Sim_Triangle is a simulation-specific class
+        elif cell_type.lower() == "line":
+            return Sim_Line(cell_index, cell_points_id, original_index)  # Sim_Line is a simulation-specific class
+        else:
+            raise ValueError(f"Unknown cell type: {cell_type}")
+
+class Sim_Line(Sim_Cell, Line):
+    
+    def midpoint(self):
+        x1,y1 = self._coordinates[0]
+        x2,y2 = self._coordinates[1]
+
+        self._midpoint = [(x1 + x2) / 2, (y1 + y2) / 2]
+
+class Sim_Triangle(Sim_Cell, Triangle):
     
     def scaled_normals(self):
         pointer1 = [0,1,2]
@@ -48,8 +77,6 @@ class Sim_Trianle(Triangle, Sim_Cell):
                         self._scaled_normals.append({neighbor_cell: scaled_normals})
                         print({neighbor_cell: scaled_normals})  # print the scaled normal vector for debugging
 
-            
-
 
     def __str__(self): #prints info
         return f"Triangle {self._original_index}, Oil: {self.get_amount_of_oil()} Normals:{self._scaled_normals} Neighbors:{self._neighbors} Velocity:{self.get_flowfield()}"
@@ -74,11 +101,6 @@ class Sim_Trianle(Triangle, Sim_Cell):
         norm = np.linalg.norm(vector)
         
         self._u = np.exp(-(norm**2/0.01))
-    
-    def v(self):
-        x, y = self._midpoint 
-        
-        self._v = np.array([y-0.2*x, -x])
 
     def up(self, delta_t, mesh_cells):
         up = 0
@@ -96,39 +118,55 @@ class Sim_Trianle(Triangle, Sim_Cell):
         self._u = self._u + up
 
 
-class Sim_Mesh:
+class Sim_Mesh(Mesh):
+    
+    def _create_cells(self, mesh_cells):
+        """Reads cells metadata and stores in list"""
+        all_cells = []
+        orginal_cell_id = 0
+        for cell_block in mesh_cells: 
+            cell_type = cell_block.type  # Access the type of the cell (e.g., "triangle", "line")
+            if cell_type == "vertex":
+                continue
+            cell_data = cell_block.data  # Access the array of cell points
+            """uses metadata to utilize cell factory for each cell type"""
+            for idx, cell_points_id in enumerate(cell_data): # idx is id for cell in blocktype
+                all_cells.append(Sim_Cell.cell_factory(cell_type, idx, cell_points_id, orginal_cell_id))
+                orginal_cell_id += 1
+        return all_cells
+
     def store_area(self):
         for cell in self._cells:
-            if isinstance(cell, Triangle):
+            if isinstance(cell, Sim_Triangle):
                 
                 cell.area()
     
     def store_midpoint(self):
         for cell in self._cells:
-            if isinstance(cell, Triangle):
+            if isinstance(cell, Sim_Triangle):
                 
                 cell.midpoint()
         
     def initial_oil(self, x, y):
         for cell in self._cells:
-            if isinstance(cell, Triangle):
+            if isinstance(cell, Sim_Triangle):
                 
                 cell.u_0(x,y)
     
     def flow_vector(self):
         for cell in self._cells:
-            if isinstance(cell, Triangle):
+            if isinstance(cell, Sim_Triangle):
                 
                 cell.v()
     
     def update_oil(self, delta_t):
         for cell in self._cells:
-            if isinstance(cell, Triangle):
+            if isinstance(cell, Sim_Triangle):
                 
                 cell.up(delta_t, self._cells)
     
     def normal(self):
         for cell in self._cells:
-            if isinstance(cell, Triangle):
+            if isinstance(cell, Sim_Triangle):
                 
                 cell.scaled_normals()
