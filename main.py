@@ -1,5 +1,5 @@
 from msh_classes import *
-from simulation import *
+from packages.simulation.simulation import *
 import meshio as m
 import numpy as np
 import matplotlib.pyplot as plt

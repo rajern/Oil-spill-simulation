@@ -1,4 +1,4 @@
-from msh_classes import *
+from .msh_classes import *
 import numpy as np
 
 def flux(u_i, u_ngh, normal, v):
