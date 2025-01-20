@@ -33,3 +33,118 @@ def sim_line():
     line._coordinates = [(0, 0), (1, 1)]
     line.midpoint()  # Calculate the midpoint of the line
     return line
+
+
+# Testing the flux function
+
+def test_flux_positive_normal():
+    # Test for positive flux when np.dot(v, normal) > 0
+    u_i = 10
+    u_ngh = 5
+    normal = np.array([1, 0])  # Positive direction
+    v = np.array([1, 0])  # Velocity vector in the positive direction
+    
+    flux_value = flux(u_i, u_ngh, normal, v)
+    assert flux_value == 10, f"Expected flux: 10, but got: {flux_value}"
+
+# def test_flux_negative_normal():
+#     # Test for negative flux when np.dot(v, normal) < 0
+#     u_i = 10
+#     u_ngh = 5
+#     normal = np.array([1, 0])  # Positive direction
+#     v = np.array([-1, 0])  # Velocity vector in the negative direction
+    
+#     flux_value = flux(u_i, u_ngh, normal, v)
+#     assert flux_value == 5, f"Expected flux: 5, but got: {flux_value}"
+
+def test_flux_zero_normal():
+    # Test for zero flux when np.dot(v, normal) = 0
+    u_i = 10
+    u_ngh = 5
+    normal = np.array([0, 1])  # Positive direction
+    v = np.array([1, 0])  # Velocity vector in the positive direction
+    
+    flux_value = flux(u_i, u_ngh, normal, v)
+    assert flux_value == 0, f"Expected flux: 0, but got: {flux_value}"
+
+# Testing the Sim_Cell class
+
+def test_sim_cell():
+    # Test the Sim_Cell class factory method
+    cell = Sim_Cell.cell_factory("line", 0, [0, 1], 0)
+    assert isinstance(cell, Sim_Line), "Sim_Cell factory did not return a Sim_Line object"
+
+# Testing the Sim_Line class
+
+def test_sim_line_midpoint(sim_line):
+    # Test the midpoint calculation for the Sim_Line class
+    assert sim_line._midpoint == [0.5, 0.5], f"Expected midpoint: [0.5, 0.5], but got: {sim_line._midpoint}"
+
+# Testing the Sim_Triangle class
+
+def test_sim_triangle_midpoint(sim_triangle):
+    # Test the midpoint calculation for the Sim_Triangle class
+    assert sim_triangle._midpoint == [0.3333333333333333, 0.3333333333333333], f"Expected midpoint: [0.3333333333333333, 0.3333333333333333], but got: {sim_triangle._midpoint}"
+
+def test_sim_triangle_area(sim_triangle):
+    # Test the area calculation for the Sim_Triangle class
+    assert sim_triangle._area == 0.5, f"Expected area: 0.5, but got: {sim_triangle._area}"
+
+# Testing the Sim_Mesh class
+#COPILOT:
+# def test_sim_mesh_creation(sim_mesh):
+#     # Test the creation of Sim_Mesh object
+#     assert len(sim_mesh._cells) == 2, f"Expected 2 cells, but got: {len(sim_mesh._cells)}"
+
+# def test_sim_mesh_initial_oil(sim_mesh):
+#     # Test the initial oil distribution calculation for the Sim_Mesh class
+#     sim_mesh.initial_oil(0.5, 0.5)
+#     assert sim_mesh._cells[1]._u == np.exp(-0.5), f"Expected initial oil value: {np.exp(-0.5)}, but got: {sim_mesh._cells[1]._u}"
+
+# def test_sim_mesh_flow_vector(sim_mesh):
+#     # Test the flow vector calculation for the Sim_Mesh class
+#     sim_mesh.flow_vector()
+#     assert sim_mesh._cells[1]._v == 0.5, f"Expected flow vector: 0.5, but got: {sim_mesh._cells[1]._v}"
+
+# def test_sim_mesh_update_oil(sim_mesh):
+#     # Test the update oil calculation for the Sim_Mesh class
+#     sim_mesh._cells[1]._u = 1  # Set initial oil value to 1
+#     sim_mesh.update_oil(0.1)  # Update oil with delta_t = 0.1
+#     assert sim_mesh._cells[1]._u == 0.9048374180359595, f"Expected updated oil value: 0.9048374180359595, but got: {sim_mesh._cells[1]._u}"
+
+#CHAT:
+# def test_sim_mesh_store_area(sim_mesh):
+#     # Test the store_area method in Sim_Mesh
+#     for cell in sim_mesh._cells:
+#         if isinstance(cell, Sim_Triangle):
+#             assert cell._area > 0, "Area should be greater than 0 for triangles"
+
+# def test_sim_mesh_store_midpoint(sim_mesh):
+#     # Test the store_midpoint method in Sim_Mesh
+#     for cell in sim_mesh._cells:
+#         assert cell._midpoint, "Midpoint should be calculated for each cell"
+
+# def test_sim_mesh_initial_oil(sim_mesh):
+#     # Test that initial oil amount is set correctly
+#     for cell in sim_mesh._cells:
+#         if isinstance(cell, Sim_Triangle):
+#             assert cell._u >= 0, f"Expected non-negative oil amount, but got: {cell._u}"
+
+# def test_sim_mesh_update_oil(sim_mesh):
+#     # Test the update_oil method in Sim_Mesh (make sure oil is updated correctly)
+#     delta_t = 0.01
+#     initial_u = sim_mesh._cells[0]._u  # Initial oil value of the first cell
+#     sim_mesh.update_oil(delta_t)
+#     assert sim_mesh._cells[0]._u != initial_u, f"Oil amount should be updated, but it stayed the same"
+
+
+def test_sim_cell_get_amount_of_oil():
+    # Test get_amount_of_oil method
+    cell = Sim_Cell(0, [0, 1, 2], 0)
+    cell._u = 100  # Set the oil amount directly
+    assert cell.get_amount_of_oil() == 100, f"Expected oil amount: 100, but got: {cell.get_amount_of_oil()}"
+    
+def test_sim_cell_v(sim_line):
+    # Test velocity calculation for a line cell
+    sim_line.v()  # Calculate velocity
+    assert len(sim_line._v) == 2, f"Velocity should be a 2D vector, but got: {sim_line._v}"
