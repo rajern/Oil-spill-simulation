@@ -85,10 +85,10 @@ class Triangle(Cell): #triangle class, parent class: cell
                 if len(shared_points) == 2: #if equal to 2 shared points, the other cell is a neighbor
                     shared_points=list(shared_points)
                     
-                    if not any(other_cell._original_index == ngh_cell.keys() for ngh_cell in self._neighbors):
+                    if not any(other_cell._original_index == ngh_cell.keys()[0] for ngh_cell in self._neighbors):
                         self._neighbors.append({other_cell._original_index: shared_points}) #adds to list
                     
-                    if not any(self._original_index == ngh_cell.keys() for ngh_cell in other_cell._neighbors):
+                    if not any(self._original_index == ngh_cell.keys()[0] for ngh_cell in other_cell._neighbors):
                         other_cell._neighbors.append({self._original_index: shared_points})
                     
                     if len(self._neighbors) == 3:
