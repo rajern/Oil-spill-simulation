@@ -5,6 +5,25 @@ import cv2  # requires opencv-python
 
 
 def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t: float, box_coords: list = None):
+    """
+    A function that plots the mesh at different timesteps and saves the plots as images.
+    The function also creates a plot of the oil concentration in the specified area over time.
+    
+    Parameters:
+    mesh: Sim_Mesh object
+    destination_folder: str, the folder where the images will be saved
+    nr_of_pics: int, the number of images to be saved
+    timesteps: int, the total number of timesteps
+    delta_t: float, the time step size
+    box_coords: list, the coordinates of the fishing ground area to be plotted
+    
+    Variables:
+    umax: float, the maximum oil concentration in the mesh
+    umin: float, the minimum oil concentration in the mesh
+    u_in_area: list, the oil concentration in the specified area over time
+    count: int, the number of timesteps
+    N: int, the number of timesteps per image
+    """
     #delta_t = (tend-tstart)/timestep
     N = int(timesteps/nr_of_pics)
 
@@ -97,6 +116,14 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
 
 
 def animation(folder: str, img_name: str, nr_of_pics: int):
+    """
+    A function that creates a video from a series of images.
+    
+    Parameters:
+    folder: str, the folder where the images are stored
+    img_name: str, the name of the image files
+    nr_of_pics: int, the number of images to be included in the video
+    """
     # Get the list of image files in the directory
     images = [f"./{folder}/{img_name}{i}.png" for i in range(0, nr_of_pics)]
     # determine dimension from first image
