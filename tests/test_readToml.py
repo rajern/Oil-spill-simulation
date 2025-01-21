@@ -1,7 +1,7 @@
 import pytest
 import os
 import toml
-from readToml import ConfigReader
+from packages.simulation.readToml import ConfigReader
 
 # Creates valid config file for testing
 @pytest.fixture

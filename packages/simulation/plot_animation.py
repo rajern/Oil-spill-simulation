@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import cv2  # requires opencv-python
 
 
-def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, box_coords: list = None):
+def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t: float, box_coords: list = None):
     #delta_t = (tend-tstart)/timestep
     N = int(timesteps/nr_of_pics)
 
