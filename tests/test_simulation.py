@@ -2,12 +2,13 @@ import pytest
 import numpy as np
 from packages.simulation.simulation import Sim_Cell, Sim_Line, Sim_Triangle, Sim_Mesh, flux
 
-# Sample input data
+# Sample input data. 
+# Making an example of a 2D mesh with 3 points, 1 line cell, and 1 triangle cell
 sample_points = [(1, 2), (3, 4), (5, 6)]  # 2D mesh points (x, y)
 sample_cell_data = [
     {"type": "line", "data": [[0, 1]]},
     {"type": "triangle", "data": [[0, 1, 2]]}
-]  # Mock cell data with line and triangle cells
+]  
 sample_mesh_data = {
     "points": sample_points,
     "cells": sample_cell_data
@@ -15,12 +16,10 @@ sample_mesh_data = {
 
 @pytest.fixture
 def sim_triangle():
-    # Mocking a Sim_Triangle object with 3 points
-    triangle = Sim_Triangle(0, [0, 1, 2], 0)
-    #first index: cell_index, second index: cell_points_id, third index: original_index
+    triangle = Sim_Triangle(0, [0, 1, 2], 0) #first index: cell_index, second index: cell_points_id, third index: original_index
     triangle._coordinates = [(0, 0), (1, 0), (0, 1)]
-    triangle.midpoint()  # Calculate the midpoint of the triangle
-    triangle.area()  # Calculate the area of the triangle
+    triangle.midpoint()  
+    triangle.area()  
     return triangle
 
 @pytest.fixture
@@ -74,8 +73,6 @@ def test_flux_zero_normal():
     assert flux_value == 0, f"Expected flux: 0, but got: {flux_value}"
 
 # Testing the Sim_Cell class
-
-#vet ikke helt hva poenget med denne er? er den nødevenidg?
 def test_sim_cell():
     # Test the Sim_Cell class factory method
     cell = Sim_Cell.cell_factory("line", 0, [0, 1], 0)
