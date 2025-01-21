@@ -12,7 +12,6 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
     umin = min(cell.get_amount_of_oil() for cell in mesh._cells if isinstance(cell, Sim_Triangle))
     
     u_in_area = []
-
     count = 0
 
     # Iterate through time steps and plot the mesh
@@ -20,12 +19,14 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
         plt.figure()
         ax = plt.gca()
 
-        u_in_area.append(sum(mesh._cells[cell_in_area].get_amount_of_oil() for cell_in_area in mesh._points_inside_area))
+        u_in_area.append(
+            sum(mesh._cells[cell_in_area].get_amount_of_oil() for cell_in_area in mesh._points_inside_area)
+            )
 
         # Create the colormap
         sm = plt.cm.ScalarMappable(cmap="viridis")
         sm.set_array([umin, umax])
-        cbar = plt.colorbar(sm, ax=ax, label="Oil Concentration (u)")
+        cbar = plt.colorbar(sm, ax=ax, label="Oil Concentration (u)") 
 
         # Plot each triangle with its corresponding color
         for cell in mesh._cells:
@@ -73,14 +74,12 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
         # Update oil distribution
         for timestep in range(N):
             mesh.update_oil(delta_t)
-            
             count += 1
             print(f"Simulation timestep {count} of {timesteps}")
 
-        # Create the plot
+    # Create the plot
     plt.figure()
     plt.plot(np.arange(len(u_in_area)), u_in_area, color='blue', label='Oil in Area')
-
     plt.xlabel('Timestep')
     plt.ylabel('Oil Concentration (u) in Area')
     plt.title('Oil Concentration Over Time in Specified Area')

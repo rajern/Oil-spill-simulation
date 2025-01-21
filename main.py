@@ -1,11 +1,11 @@
+import os
+import meshio as m
+import numpy as np
+import matplotlib.pyplot as plt
 from packages.simulation.msh_classes import *
 from packages.simulation.simulation import *
 from packages.simulation.plot_animation import *
 from packages.simulation.readToml import *
-import meshio as m
-import numpy as np
-import matplotlib.pyplot as plt
-import os
 
 if __name__ == "__main__":
     find_all, folder, config_file = parse_input()
@@ -18,11 +18,9 @@ if __name__ == "__main__":
         # Find all .toml files in a folder 
         search_folder = os.getcwd() # Get current working directory - getcwd()
         config_files = []
-
         for file in os.listdir(search_folder): # Creates list of all entries in the directory
             if file.endswith('.toml'): 
                 config_files.append(os.path.join(search_folder, file)) # Os.path.join() ensures file gets a proper path
-
             if not config_files: 
                 raise ValueError(f'No config files found in folder {search_folder}')
 
@@ -30,11 +28,9 @@ if __name__ == "__main__":
         # Search for .toml files in the specified folder
         search_folder = folder
         config_files = []
-
         for file in os.listdir(search_folder):
             if file.endswith('.toml'): 
                 config_files.append(os.path.join(search_folder, file)) # Os.path.join() ensures file gets a proper path
-
             if not config_files: 
                 raise ValueError(f'No config files found in folder {search_folder}')
 
@@ -42,16 +38,15 @@ if __name__ == "__main__":
         # Using 'input.toml' if no arguments are provided
         config_files = ["input.toml"]
 
+    # Process each config file
     for config_file in config_files: 
         try: 
             # Load configuration file
             config_reader = ConfigReader(config_file)
             config_reader.load_config_file()
             
-            # Extract folder name from config file
+            # Extract folder name and create folder if it doesn't exist
             results_folder = config_file.replace('.toml', '')
-
-            # Create folder if it doesn't already exist
             if not os.path.exists(results_folder):
                 os.makedirs(results_folder)
             
@@ -60,6 +55,7 @@ if __name__ == "__main__":
             t_start = config_reader.get_value("settings", "tStart")
             t_end = config_reader.get_value("settings", "tEnd")
             delta_t = (t_end - t_start) / n_steps # Add delta_t for later
+
             mesh_name = config_reader.get_value("geometry", "meshName")
             borders = config_reader.get_value("geometry", "borders") # Fishing grounds
             log_name = config_reader.get_value("IO", "logName")
@@ -74,6 +70,7 @@ if __name__ == "__main__":
             if restart_file:
                 print(f"Restart File: {restart_file}")
 
+            # Initialize mesh and set up simulation
             msh = m.read(mesh_name)
             mesh = Sim_Mesh(msh)
 
@@ -87,12 +84,12 @@ if __name__ == "__main__":
             mesh.store_area()
             fishing_bay = borders
             mesh.cells_inside_area(fishing_bay)
+
+            # Run simulation and generate outputs
             plot(mesh, results_folder, write_frequency, n_steps, delta_t, fishing_bay)
-
             animation(results_folder, "mesh_timestep_", 20)
-
             mesh.store_mesh_sim()
 
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error processing {config_file}: {e}")
             exit(1)

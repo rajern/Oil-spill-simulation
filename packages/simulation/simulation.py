@@ -23,7 +23,6 @@ class Sim_Cell(Cell):
     """
     def __init__(self, cell_index, cell_points_id, original_index):
         super().__init__(cell_index, cell_points_id, original_index)
-
         self._midpoint = [] 
         self._area = 0
         self._u = 0
@@ -33,12 +32,10 @@ class Sim_Cell(Cell):
     
     def v(self):
         x, y = self._midpoint 
-        
         self._v = np.array([y-0.2*x, -x])
 
     def get_amount_of_oil(self):
         return self._u
-
 
     @staticmethod
     def cell_factory(cell_type, cell_index, cell_points_id, original_index):
@@ -57,7 +54,6 @@ class Sim_Line(Sim_Cell, Line):
     def midpoint(self):
         x1,y1 = self._coordinates[0]
         x2,y2 = self._coordinates[1]
-
         self._midpoint = [(x1 + x2) / 2, (y1 + y2) / 2]
 
 class Sim_Triangle(Sim_Cell, Triangle):
@@ -149,6 +145,7 @@ class Sim_Mesh(Mesh):
             cell_type = cell_block.type  # Access the type of the cell (e.g., "triangle", "line")
             if cell_type == "vertex":
                 continue
+
             cell_data = cell_block.data  # Access the array of cell points
             """uses metadata to utilize cell factory for each cell type"""
             for idx, cell_points_id in enumerate(cell_data): # idx is id for cell in blocktype
@@ -159,45 +156,34 @@ class Sim_Mesh(Mesh):
     def store_area(self):
         for cell in self._cells:
             if isinstance(cell, Sim_Triangle):
-                
                 cell.area()
-        
         print("Area calculated for all triangle cells in mesh")
     
     def store_midpoint(self):
         for cell in self._cells:
-            
             cell.midpoint()
-        
         print("Midpoint calculated for all cells in mesh")
         
     def initial_oil(self, x, y):
         for cell in self._cells:
-            if isinstance(cell, Sim_Triangle):
-                
+            if isinstance(cell, Sim_Triangle):    
                 cell.u_0(x, y)
-
         print("Initial oil calculated for all triangle cells in mesh")
     
     def flow_vector(self):
-        for cell in self._cells:
-                          
+        for cell in self._cells:          
             cell.v()
-
         print("Flowfiels calculated for all cells in mesh")
 
     def update_oil(self, delta_t):
         for cell in self._cells:
             if isinstance(cell, Sim_Triangle):
-                
                 cell.up(delta_t, self._cells)
     
     def normal(self):
         for cell in self._cells:
             if isinstance(cell, Sim_Triangle):
-                
                 cell.scaled_normals()
-
         print("Normals calculated for all cells in mesh")
 
     def cells_inside_area(self, area:list):
@@ -216,7 +202,6 @@ class Sim_Mesh(Mesh):
                     
     def store_mesh_sim(self, filename = "restartfile.csv", destination_folder = None):
         mesh_data = []
-
         for cell in self._cells:
             cell_data = {
                 'cell_index': cell._cell_index,
@@ -230,7 +215,6 @@ class Sim_Mesh(Mesh):
                 'oil_amount': cell.get_amount_of_oil() if isinstance(cell, Sim_Cell) else None,
                 'scaled_normals': str(cell._scaled_normals) if isinstance(cell, Sim_Cell) else None
             }
-
             mesh_data.append(cell_data)
 
         df = pd.DataFrame(mesh_data)

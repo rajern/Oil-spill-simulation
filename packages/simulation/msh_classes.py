@@ -32,7 +32,6 @@ class Cell(ABC):
         self._cell_points_id = cell_points_id
         self._neighbors = [] #empty list for neigbor cells to be stored
         self._is_boundary = False #boundary statement is false by default
-
         self._coordinates = []
         
 
@@ -97,7 +96,9 @@ class Triangle(Cell):
                         break
         
     def __str__(self): #prints info
-        return f"Triangle {self._original_index}, Oil: {self.get_amount_of_oil()} Normals:{self._scaled_normals} Neighbors:{self._neighbors} Velocity:{self.get_flowfield()}"
+        return (f"Triangle {self._original_index}, Oil: {self.get_amount_of_oil()} "
+                f"Normals:{self._scaled_normals} Neighbors:{self._neighbors}, "
+                f"Velocity:{self.get_flowfield()}")
 
         
 class Mesh:
@@ -132,7 +133,6 @@ class Mesh:
         Store coordinates for the cell-ids
         """
         for cell in self._cells:
-            
             cell.get_point_coord(self._points)
     
     def find_neighbors(self):
@@ -140,5 +140,4 @@ class Mesh:
         Find neighbors for cells
         """
         for cell in self._cells:
-            
             cell.store_neighbors(self._cells)
