@@ -10,7 +10,7 @@ class ConfigReader:
         if not os.path.exists(self.file_path):
             raise FileNotFoundError(f'Config file {self.file_path} does not exist.')
         with open(self.file_path, 'r') as file: 
-            self.config = toml.load(self.file_path)
+            self.config = toml.load(file)
 
         self.validate_config()
 
