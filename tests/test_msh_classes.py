@@ -7,21 +7,22 @@ from packages.simulation.msh_classes import Point, Cell, Line, Triangle, Mesh
 sample_points = [(1, 2), (2, 3), (3, 4), (4, 5)]  # This simulates mesh points coordinates
 
 def test_point_x():
-    # Test the x property of the Point class
+    """ Test the x property of the Point class"""
     point = Point(sample_points, 0)
     assert point._x == 1
 
 def test_point_y():
-    # Test the y property of the Point class
+    """ Test the y property of the Point class"""
     point = Point(sample_points, 0)
     assert point._y == 2
 
 def test_point_index():
-    # Test the point_index property of the Point class
+    """ Test the point_index property of the Point class"""
     point = Point(sample_points, 0)
     assert point._point_index == 0
 
 def test_point_repr():
+    """ Test the __repr__ method of the Point class"""
     point = Point(sample_points, 0)
     repr_str = repr(point)
     assert repr_str == "Point(index=0, x=1.00, y=2.00)"  
@@ -38,23 +39,31 @@ def testDivision(input1 , input2 ):
 
 # Testing the Cell class
 def test_cell_factory_line():
-    # Creating line cell using the cell_factory
+    """ 
+    Creating line cell using the cell_factory
+    Testing if the cell created is an instance of the Line class
+    """
     line_cell = Cell.cell_factory("line", 0, [0, 1], 0)
     assert isinstance(line_cell, Line)
 
 def test_cell_factory_triangle():
-    # Creating triangle cell using the cell_factory
+    """
+    Creating triangle cell using the cell_factory
+    Testing if the cell created is an instance of the Triangle class
+    """
     triangle_cell = Cell.cell_factory("triangle", 1, [1, 2, 3], 1)
     assert isinstance(triangle_cell, Triangle)
 
 def test_cell_factory_error():
-    # Test for an unknown cell type
+    """Test if the cell_factory raises an error for unknown cell type"""
     with pytest.raises(ValueError) as excinfo:
         Cell.cell_factory("unknown", 0, [0, 1], 0)
     assert str(excinfo.value) == "Unknown cell type: unknown"
 
 def test_point_coord():
-    # Test the point_coord method of the Cell class
+    """
+    Test the point_coord method of the Cell class
+    """
     line_cell = Cell.cell_factory("line", 0, [0, 1], 0)
     mesh_points = [Point(sample_points, 0), Point(sample_points, 1)]
     x, y = line_cell.point_coord(0, mesh_points)
@@ -62,7 +71,9 @@ def test_point_coord():
     assert y == 2
 
 def test_get_point_coord():
-    # Test the get_point_coord method of the Cell class
+    """ 
+    Test the get_point_coord method of the Cell class 
+    """
     line_cell = Cell.cell_factory("line", 0, [0, 1], 0)
     mesh_points = [Point(sample_points, 0), Point(sample_points, 1)]
     line_cell.get_point_coord(mesh_points)
@@ -71,6 +82,9 @@ def test_get_point_coord():
 # Testing the Line class
 
 def test_line_neighbors():
+    """
+    Test the store_neighbors method of the Line class when the line has one neighbor
+    """
     line1 = Line(0, [0, 1], 0)
     line2 = Line(1, [1, 2], 1)
     line3 = Line(2, [2, 3], 2)
@@ -81,6 +95,9 @@ def test_line_neighbors():
 
 #hvorfor er denne feil, skal ikke denne ha to neighbors??
 def test_line_neighbors_two():
+    """
+    Test the store_neighbors method of the Line class if the line has two neighbors
+    """
     line1 = Line(0, [0, 1], 0)
     line2 = Line(1, [1, 2], 1)
     line3 = Line(2, [2, 3], 2)
@@ -93,56 +110,87 @@ def test_line_neighbors_two():
 
 # Testing the Triangle class
 def test_triangle_neighbors():
+    """
+    Test the store_neighbors method of the Triangle class
+    """
     triangle1 = Triangle(0, [0, 1, 2], 0)
     triangle2 = Triangle(1, [1, 2, 3], 1)
 
     triangle1.store_neighbors([triangle1, triangle2])
     assert triangle1._neighbors == [{1: [1, 2]}]  # Triangle1 shares points 1 and 2 with Triangle2
 
+# Testing the Mesh class
+def create_example_mesh():
+    """
+    Create an example mesh with 4 points, 1 line cell, and 1 triangle cell
+    """
+    points = [
+        [0.0, 0.0],
+        [1.0, 0.0],
+        [1.0, 1.0],
+        [0.0, 1.0]
+    ]
+    cells = [
+        ("line", [[0, 1], [1, 2], [2, 3], [3, 0]]),
+        ("triangle", [[0, 1, 2], [0, 2, 3]])
+    ]
+    return meshio.Mesh(points=points, cells=[meshio.CellBlock(type, data) for type, data in cells])
 
 
-# # Testing the Mesh class
-# def test_mesh_creation():
-#     """Test if mesh creation is working properly."""
-#     sample_points = [
-#         [0, 0],  # point 0
-#         [1, 0],  # point 1
-#         [1, 1],  # point 2
-#         [0, 1],  # point 3
-#         [0.5, 0.5]  # point 4 (middle point)
-#     ]
-#     sample_cells = [
-#         {'type': 'line', 'data': [0, 1]},
-#         {'type': 'triangle', 'data': [0, 1, 2]},
-#         {'type': 'line', 'data': [2, 3]},
-#         {'type': 'triangle', 'data': [1, 2, 3]}
-#     ]
-    
-#     sample_msh = meshio.Mesh(
-#         points=sample_points,
-#         cells=sample_cells
-#     )
-    
-#     mesh = Mesh(sample_msh)
-    
-#     assert len(mesh._points) == 5, f"Expected 5 points, got {len(mesh._points)}"
-#     assert len(mesh._cells) == 4, f"Expected 4 cells, got {len(mesh._cells)}"
-#     assert isinstance(mesh._cells[0], Line), f"Expected Line, got {type(mesh._cells[0])}"
-#     assert isinstance(mesh._cells[1], Triangle), f"Expected Triangle, got {type(mesh._cells[1])}"
-    
-#     print("test_mesh_creation passed!")
+def test_mesh_initialization():
+    """
+    Test the initialization of the Mesh class
+    """
+    msh = create_example_mesh()
+    mesh = Mesh(msh)
+
+    assert len(mesh._points) == 4 # the four points created in the example mesh
+    assert len(mesh._cells) == 6  # 4 lines + 2 triangles
+
+# Step 3: Test Storing Coordinates
+def test_store_coordinates():
+    """ 
+    Test the store_coordinates method of the Mesh class
+    """
+    msh = create_example_mesh()
+    mesh = Mesh(msh)
+
+    mesh.store_coordinates()
+
+    # Check if all cells have coordinates
+    for cell in mesh._cells:
+        assert len(cell._coordinates) == len(cell._cell_points_id)
+
+# Step 4: Test Finding Neighbors
+def test_find_neighbors():
+    """
+    Test the find_neighbors method of the Mesh class
+    """
+    msh = create_example_mesh()
+    mesh = Mesh(msh)
+
+    mesh.find_neighbors()
+
+    # Test neighbors for a specific line
+    line_cell = mesh._cells[0]  # First line
+    assert set(line_cell._neighbors) == {1, 3, 4}  # Update to reflect actual neighbors
+
+    # Test neighbors for a specific triangle
+    triangle_cell = mesh._cells[4]  # First triangle
+    assert len(triangle_cell._neighbors) > 0  # Should have neighbors
 
 
-# def test_mesh_init():
-#     # Test the initialization of the Mesh class
-#     mesh = Mesh(sample_mesh)
-#     mesh._points = [Point(sample_points, i) for i in range(len(sample_points))]
-#     assert len(mesh._points) == 4
+def test_full_mesh_setup():
+    """
+    Test the full mesh setup process
+    """
+    msh = create_example_mesh()
+    mesh = Mesh(msh)
 
-# def test_create_cells():
-#     # Test the _create_cells method of the Mesh class
-#     mesh = Mesh(sample_points)
-#     mesh._points = [Point(sample_points, i) for i in range(len(sample_points))]
-#     mesh_cells = [[0, 1], [1, 2], [2, 3]]
-#     cells = mesh._create_cells(mesh_cells)
-#     assert len(cells) == 3
+    mesh.store_coordinates()
+    mesh.find_neighbors()
+
+    # Ensure all cells have coordinates and neighbors
+    for cell in mesh._cells:
+        assert len(cell._coordinates) == len(cell._cell_points_id)
+        assert cell._neighbors is not None
