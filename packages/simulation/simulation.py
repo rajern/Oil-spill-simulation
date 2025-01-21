@@ -1,9 +1,6 @@
 from .msh_classes import Cell, Line, Triangle, Mesh
 import numpy as np
-"""
-Class used for the simulation of the cells. 
-It inherits from its parents class; Cell from the msh_classes file.
-"""
+
 
 def flux(u_i, u_ngh, normal, v):
     """
@@ -31,6 +28,7 @@ class Sim_Cell(Cell):
         self._u = 0
         self._v = []
         self._scaled_normals = []
+        self._inside_area = False
     
     def v(self):
         x, y = self._midpoint 
@@ -62,7 +60,10 @@ class Sim_Line(Sim_Cell, Line):
         self._midpoint = [(x1 + x2) / 2, (y1 + y2) / 2]
 
 class Sim_Triangle(Sim_Cell, Triangle):
-    
+    """
+    Class for simulation triangle cells. Inherits from its parents classes; Sim_Cell and Triangle from the msh_classes file.
+    It stores the midpoint, area, oil amount, velocity, and scaled normals.
+    """
     def scaled_normals(self):
         pointer1 = [0,1,2]
         pointer2 = [1,2,0]
@@ -126,9 +127,26 @@ class Sim_Triangle(Sim_Cell, Triangle):
             
         self._u = self._u + up
 
+    def is_inside(self, area:list):
+        
+        x, y = self._midpoint
+        
+        x_val = area[0]
+        y_val = area[1]
+
+        if min(x_val) <= x <= max(x_val)\
+        and min(y_val) <= y <= max(y_val):
+            self._inside_area = True
+
+
 
 class Sim_Mesh(Mesh):
-    
+    #make a list of cell ids that are inside the area to append to
+    """
+    Class for simulation mesh. Inherits from its parents class; Mesh from the msh_classes file.
+    input: meshfile
+    Reads in points and cells into lists that stores metadata needed for simulation 
+    """
     def _create_cells(self, mesh_cells):
         """Reads cells metadata and stores in list"""
         all_cells = []
@@ -178,6 +196,12 @@ class Sim_Mesh(Mesh):
                 
                 cell.scaled_normals()
 
+    def cells_inside_area(self, area:list):
+        for cell in self._cells:
+            if isinstance(cell, Sim_Triangle):
+                
+                cell.is_inside(area)
+
     def store_mesh_sim(self, filename = "restartfile.txt"):
         with open(filename, "w") as f:
             f.write("Mesh info:\n==========\n")
@@ -207,4 +231,3 @@ class Sim_Mesh(Mesh):
                 f.write("-" * 40 + "\n")
 
         print(f"Data written to file {filename}")
-                
