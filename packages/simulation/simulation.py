@@ -2,6 +2,7 @@ from packages.simulation.msh_classes import Cell, Line, Triangle, Mesh
 import numpy as np
 import pandas as pd
 import os
+import ast
 
 def flux(u_i, u_ngh, normal, v):
     """
@@ -326,7 +327,7 @@ class Sim_Mesh(Mesh):
         
         print("Cells inside area found")
                     
-    def store_mesh_sim(self, filename = "restartfile.csv", destination_folder = None):
+    def store_mesh_sim(self, destination_folder = None, filename = "restartfile.csv"):
         """
         A function that stores the mesh data in a csv file to make it easier to restart the simulation at a chosen time.
         """
@@ -357,10 +358,38 @@ class Sim_Mesh(Mesh):
 
         print(f"Data stored and written to file {filepath}.csv")
 
-    """def reconstruct_mesh(self, filename = "restartfile.csv")
+    def reconstruct_mesh(self, filename = "restartfile.csv"):
         
         df = pd.read_csv(filename)
 
         reconstructed_cells = []
 
-        for index, row in df.iterrows():"""
+        for index, row in df.iterrows():
+            cell_type = row['cell_type']
+            coordinates = ast.literal_eval(row['coordinates'])  # Convert string back to list of tuples
+            neighbors = ast.literal_eval(row['neighbors']) if row['neighbors'] != "None" else None
+            velocity = np.array(ast.literal_eval(row['velocity']))  # Convert string to numpy array
+            midpoint = ast.literal_eval(row['midpoint']) if pd.notna(row['midpoint']) else None
+            area = row['area']
+            oil_amount = row['oil_amount']
+            scaled_normals = ast.literal_eval(row['scaled_normals']) if pd.notna(row['scaled_normals']) else None
+
+            # Create the correct type of cell (e.g., Sim_Triangle or Sim_Line)
+            if cell_type == "Sim_Triangle":
+                cell = Sim_Triangle(coordinates, velocity, neighbors, midpoint, area, oil_amount, scaled_normals)
+            elif cell_type == "Sim_Line":
+                cell = Sim_Line(coordinates, velocity, neighbors, midpoint, area, oil_amount, scaled_normals)
+            # Add more cell types as necessary
+
+            # Set the attributes based on the row data
+            cell._cell_index = row['cell_index']
+            cell._original_index = row['original_index']
+
+            # Append the reconstructed cell to the list
+            reconstructed_cells.append(cell)
+
+        # Assuming mesh object has a _cells attribute that holds the list of cells
+        self._cells = reconstructed_cells
+
+        print(f"Mesh successfully reconstructed from {filename}")
+

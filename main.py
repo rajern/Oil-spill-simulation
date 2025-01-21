@@ -87,8 +87,8 @@ if __name__ == "__main__":
 
             # Run simulation and generate outputs
             plot(mesh, results_folder, write_frequency, n_steps, delta_t, fishing_bay)
-            animation(results_folder, "mesh_timestep_", 20)
-            mesh.store_mesh_sim()
+            animation(results_folder, "mesh_timestep_", write_frequency)
+            mesh.store_mesh_sim(results_folder)
 
         except Exception as e:
             print(f"Error processing {config_file}: {e}")

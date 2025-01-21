@@ -24,7 +24,6 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
     count: int, the number of timesteps
     N: int, the number of timesteps per image
     """
-    #delta_t = (tend-tstart)/timestep
     N = int(timesteps/nr_of_pics)
 
     umax = max(cell.get_amount_of_oil() for cell in mesh._cells if isinstance(cell, Sim_Triangle))
@@ -50,10 +49,10 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
         # Plot each triangle with its corresponding color
         for cell in mesh._cells:
             if isinstance(cell, Sim_Triangle):
-                # Get triangle vertices
-                vertices = np.array(cell._coordinates)
+                # Get triangle points
+                points = np.array(cell._coordinates)
 
-                # Get oil concentration `u` for the cell
+                # Get amount of oil for the cell
                 u_value = cell.get_amount_of_oil()
 
                 # Normalize u_value for colormap
@@ -61,7 +60,7 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
 
                 # Add the triangle to the plot
                 ax.add_patch(
-                    plt.Polygon(vertices, color=plt.cm.viridis(normalized_u), edgecolor="black", alpha=0.9)
+                    plt.Polygon(points, color=plt.cm.viridis(normalized_u), edgecolor="black", alpha=0.9)
                 )
         
         if box_coords:
@@ -125,14 +124,14 @@ def animation(folder: str, img_name: str, nr_of_pics: int):
     nr_of_pics: int, the number of images to be included in the video
     """
     # Get the list of image files in the directory
-    images = [f"./{folder}/{img_name}{i}.png" for i in range(0, nr_of_pics)]
+    images = [f"./{folder}/images/{img_name}{i}.png" for i in range(0, nr_of_pics)]
     # determine dimension from first image
-    print(len(images))
+    print(f"{len(images)} frames to be animated")
     frame = cv2.imread(images[0])
     height, width, layers = frame.shape
     # Define the codec and create a VideoWriter object
     fourcc = cv2.VideoWriter_fourcc(*'DIVX')  # or 'XVID', 'DIVX', 'mp4v' etc.
-    video = cv2.VideoWriter("video.AVI", fourcc, 1, (width, height))  # 5 frames per second
+    video = cv2.VideoWriter("video.AVI", fourcc, 5, (width, height))  # 5 frames per second
     for image in images:
         video.write(cv2.imread(image))
     cv2.destroyAllWindows()

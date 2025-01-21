@@ -193,6 +193,8 @@ class Mesh:
         for cell in self._cells:
             
             cell.get_point_coord(self._points)
+        
+        print("Coordinates stored in all cells")
     
     def find_neighbors(self):
         """
@@ -200,5 +202,8 @@ class Mesh:
         Uses the store_neighbors function.
         """
         for cell in self._cells:
+            if isinstance(cell, Triangle):
             
-            cell.store_neighbors(self._cells)
+                cell.store_neighbors(self._cells)
+
+        print("Neighbors for cells computed")
