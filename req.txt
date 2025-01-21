@@ -4,3 +4,4 @@ ABC
 abstractmethod
 opencv-python
 toml
+os
