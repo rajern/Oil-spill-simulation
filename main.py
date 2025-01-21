@@ -66,6 +66,7 @@ if __name__ == "__main__":
             write_frequency = config_reader.get_value("IO", "writeFrequency") # Use this value for creating video
             restart_file = config_reader.get_value("IO", "restartFile")
 
+            '''
             # Debugging: Print configuration values
             print(f"Loaded configuration:")
             print(f"nSteps: {n_steps}, tStart: {t_start}, tEnd: {t_end}")
@@ -73,6 +74,7 @@ if __name__ == "__main__":
             print(f"Log Name: {log_name}, Write Frequency: {write_frequency}")
             if restart_file:
                 print(f"Restart File: {restart_file}")
+            '''
 
             msh = m.read(mesh_name)
             mesh = Sim_Mesh(msh)
