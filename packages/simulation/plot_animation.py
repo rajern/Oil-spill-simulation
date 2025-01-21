@@ -56,7 +56,13 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
         ax.set_aspect("equal", adjustable="box")
 
         # Save the plot
-        image_path = os.path.join("./" + destination_folder, f"mesh_timestep_{pic}.png")
+        results_folder = f"{destination_folder}/images"
+
+        # Create folder if it doesn't already exist
+        if not os.path.exists(results_folder):
+                os.makedirs(results_folder)
+
+        image_path = os.path.join("./" + results_folder, f"mesh_timestep_{pic}.png")
         plt.savefig(image_path)
 
         # Close the plot to avoid memory issues
