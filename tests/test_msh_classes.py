@@ -1,11 +1,30 @@
 import pytest
+import meshio
 from packages.simulation.msh_classes import Point, Cell, Line, Triangle, Mesh
 # får ikke til å teste mesh classen her.. 
 # og må velge om man skal starte med å sette fixtures som nedereste del av koden gjør.
 
 
-# Testing the Point class
-sample_points = [(1, 2), (2, 3), (3, 4), (4, 5)]  # This simulates mesh points coordinates
+@pytest.fixture
+def sample_points():
+    return [[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.5, 0.5]]
+
+@pytest.fixture
+def sample_cells():
+    return [
+        {"type": "line", "data": [[0, 1], [1, 3], [3, 2], [2, 0]]},
+        {"type": "triangle", "data": [[0, 1, 4], [1, 3, 4], [3, 2, 4], [2, 0, 4]]},
+    ]
+
+@pytest.fixture
+def mock_mesh(sample_points, sample_cells):
+    class MockMesh:
+        def __init__(self, points, cells):
+            self.points = points
+            self.cells = [meshio.CellBlock(cell["type"], cell["data"]) for cell in cells]
+
+    return MockMesh(sample_points, sample_cells)
+
 def test_point_x():
     # Test the x property of the Point class
     point = Point(sample_points, 0)
@@ -79,17 +98,6 @@ def test_line_neighbors():
     line1.store_neighbors([line1, line2, line3])
     assert line1._neighbors == [1]  # Line1 is neighbors with Line2
 
-#hvorfor er denne feil, skal ikke denne ha to neighbors??
-# def test_line_neighbors_two():
-#     line1 = Line(0, [0, 1], 0)
-#     line2 = Line(1, [1, 2], 1)
-#     line3 = Line(2, [2, 3], 2)
-    
-#     # Simulate neighbor checking
-#     line2.store_neighbors([line2, line3, line1])
-#     assert line2._neighbors == [2]
-
-#skjønner ikke helt denne - hvorfor er line1  boundry?
 def test_line_neighbors_boundary():
     line1 = Line(0, [0, 1], 0)
     line2 = Line(1, [1, 2], 1)
@@ -99,12 +107,6 @@ def test_line_neighbors_boundary():
     line1.store_neighbors([line1, line2, line3])
     assert line1._is_boundary is True
 
-# def test_line_str():
-#     line = Line(0, [0, 1], 0)
-#     str_output = str(line)
-#     assert str_output == "Line 0: [0, 1]"
-
-
 # Testing the Triangle class
 def test_triangle_neighbors():
     triangle1 = Triangle(0, [0, 1, 2], 0)
@@ -112,26 +114,3 @@ def test_triangle_neighbors():
 
     triangle1.store_neighbors([triangle1, triangle2])
     assert triangle1._neighbors == [{1: [1, 2]}]  # Triangle1 shares points 1 and 2 with Triangle2
-
-# def test_triangle_str():
-#     triangle = Triangle(0, [0, 1, 2], 0)
-#     str_output = str(triangle)
-#     assert str_output == "Triangle 0: [0, 1, 2]"
-
-
-# Testing the Mesh class
-
-# def test_mesh_init():
-#     # Test the initialization of the Mesh class
-#     mesh = Mesh(sample_points)
-#     mesh._points = [Point(sample_points, i) for i in range(len(sample_points))]
-#     assert len(mesh._points) == 4
-
-# def test_create_cells():
-#     # Test the _create_cells method of the Mesh class
-#     mesh = Mesh(sample_points)
-#     mesh._points = [Point(sample_points, i) for i in range(len(sample_points))]
-#     mesh_cells = [[0, 1], [1, 2], [2, 3]]
-#     cells = mesh._create_cells(mesh_cells)
-#     assert len(cells) == 3
-
