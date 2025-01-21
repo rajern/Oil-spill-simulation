@@ -1,8 +1,7 @@
-from .msh_classes import Cell, Line, Triangle, Mesh
+from packages.simulation.msh_classes import Cell, Line, Triangle, Mesh
 import numpy as np
-import pandas as pd 
+import pandas as pd
 import os
-
 
 def flux(u_i, u_ngh, normal, v):
     """
