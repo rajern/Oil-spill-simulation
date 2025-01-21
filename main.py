@@ -6,8 +6,6 @@ import meshio as m
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-from readToml import ConfigReader
-import argparse
 
 if __name__ == "__main__":
     find_all, folder, config_file = parse_input()
@@ -89,9 +87,9 @@ if __name__ == "__main__":
             mesh.store_area()
             fishing_bay = borders
             mesh.cells_inside_area(fishing_bay)
-            plot(mesh, "images", write_frequency, n_steps, delta_t, fishing_bay)
+            plot(mesh, results_folder, write_frequency, n_steps, delta_t, fishing_bay)
 
-            animation("images", "mesh_timestep_", 20)
+            animation(results_folder, "mesh_timestep_", 20)
 
             mesh.store_mesh_sim()
 
