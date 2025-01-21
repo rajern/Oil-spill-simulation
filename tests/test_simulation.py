@@ -17,7 +17,6 @@ sample_mesh_data = {
     "cells": sample_cell_data
 }
 
-
 def sim_triangle():
     triangle = Sim_Triangle(0, [0, 1, 2], 0) #first index: cell_index, second index: cell_points_id, third index: original_index
     triangle._coordinates = [(0, 0), (1, 0), (0, 1)]
@@ -53,16 +52,16 @@ def test_flux_positive_normal():
     flux_value = flux(u_i, u_ngh, normal, v)
     assert flux_value == 10, f"Expected flux: 10, but got: {flux_value}"
 
-# This code should work but i dont:
-# def test_flux_negative_normal():
-#     # Test for negative flux when np.dot(v, normal) < 0
-#     u_i = 10
-#     u_ngh = 5
-#     normal = np.array([1, 0])  # Positive direction
-#     v = np.array([-1, 0])  # Velocity vector in the negative direction
+# Testing flux function the other way around
+def test_flux_negative_normal():
+    # Test for negative flux when np.dot(v, normal) < 0
+    u_i = 10
+    u_ngh = 5
+    normal = np.array([1, 0])  # Positive direction
+    v = np.array([-1, 0])  # Velocity vector in the negative direction
     
-#     flux_value = flux(u_i, u_ngh, normal, v)
-#     assert flux_value == 5, f"Expected flux: 5, but got: {flux_value}"
+    flux_value = flux(u_i, u_ngh, normal, v)
+    assert flux_value == -5, f"Expected flux: 5, but got: {flux_value}"
 
 
 # Testing the Sim_Cell class
@@ -72,13 +71,12 @@ def test_sim_cell():
     assert isinstance(cell, Sim_Line), "Sim_Cell factory did not return a Sim_Line object"
 
 # Testing the Sim_Line class
-#midpoint is the average of the coordinates
+# midpoint is the average of the coordinates
 def test_sim_line_midpoint(sim_line: Sim_Line):
     # Test the midpoint calculation for the Sim_Line class
     assert sim_line._midpoint == [0.5, 0.5], f"Expected midpoint: [0.5, 0.5], but got: {sim_line._midpoint}"
 
 # Testing the Sim_Triangle class
-
 def test_sim_triangle_midpoint(sim_triangle: Sim_Triangle):
     # Test the midpoint calculation for the Sim_Triangle class
     assert sim_triangle._midpoint == [0.3333333333333333, 0.3333333333333333], f"Expected midpoint: [0.3333333333333333, 0.3333333333333333], but got: {sim_triangle._midpoint}"
