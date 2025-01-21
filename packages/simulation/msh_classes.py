@@ -1,13 +1,7 @@
 import meshio
 from abc import ABC, abstractmethod
 """
-This file provides definition and basic storing of the classes Point, Cell, Line and Triangle.
-The Point class is a class for the points in the mesh.
-The Cell class is an abstract class for the cells in the mesh.
-The Line class is a class for the line cells in the mesh.
-The Triangle class is a class for the triangle cells in the mesh.
-The Mesh class is a class for the mesh.
-
+This file provides basic definition and storing of the classes Point, Cell, Line and Triangle.
 """
 
 class Point:
