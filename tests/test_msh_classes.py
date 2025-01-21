@@ -1,4 +1,5 @@
 import pytest
+import meshio
 from packages.simulation.msh_classes import Point, Cell, Line, Triangle, Mesh
 # får ikke til å teste mesh classen her.. 
 # og må velge om man skal starte med å sette fixtures som nedereste del av koden gjør.
