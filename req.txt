@@ -1,10 +1,7 @@
 meshio
 numpy
-ABC
-abstractmethod
 opencv-python
 pandas
-os
 argparse
 toml
 matplotlib

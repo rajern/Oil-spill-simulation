@@ -72,7 +72,7 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
         
         # Update oil distribution
         for timestep in range(N):
-            mesh.update_oil(delta_t=0.001)
+            mesh.update_oil(delta_t)
             
             count += 1
             print(f"Simulation timestep {count} of {timesteps}")
@@ -113,5 +113,4 @@ def animation(folder: str, img_name: str, nr_of_pics: int):
     video.release()
 
     #print(f"Video {vid_name} has been created, and stored in {output_folder}")
-
 
