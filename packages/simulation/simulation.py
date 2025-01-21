@@ -1,5 +1,6 @@
 from .msh_classes import Cell, Line, Triangle, Mesh
 import numpy as np
+import pandas as pd 
 
 
 def flux(u_i, u_ngh, normal, v):
@@ -202,33 +203,35 @@ class Sim_Mesh(Mesh):
                 and min(y_val) <= y <= max(y_val):
                     self._points_inside_area.append(cell._original_index)
                     
+    def store_mesh_sim(self, filename = "restartfile.csv"):
+        mesh_data = []
 
-    def store_mesh_sim(self, filename = "restartfile.txt"):
-        with open(filename, "w") as f:
-            f.write("Mesh info:\n==========\n")
+        for cell in self._cells:
+            cell_data = {
+                'cell_index': cell._cell_index,
+                'orginal_cell_index': cell._original_index,
+                'cell_type': type(cell).__name__,
+                'coordinates': str(cell._coordinates),
+                'neighbors': str(cell._neighbors) if cell._neighbors else None,
+                'velocity': str(cell._v),
+                'midpoint': str(cell._midpoint) if isinstance(cell, Sim_Cell) else None,
+                'area': cell._area if isinstance(cell, Sim_Cell) else None,
+                'oil_amount': cell.get_amount_of_oil() if isinstance(cell, Sim_Cell) else None,
+                'scaled_normals': str(cell._scaled_normals) if isinstance(cell, Sim_Cell) else None
+            }
 
-            for cell in self._cells:
-                f.write(f"\nCell index: {cell._cell_index}\n")
-                f.write(f"Orginal cell index: {cell._original_index}\n")
-                f.write(f"Cell type: {type(cell).__name__}\n")
+            mesh_data.append(cell_data)
 
-                f.write("Coordinates: ")
-                f.write(", ".join([f"({coord[0]}, {coord[1]})" for coord in cell._coordinates]))
-                f.write("\n")
-            
-                if cell._neighbors:
-                    f.write(f"Neighbors: {', '.join(map(str, cell._neighbors))}\n")
-                else:
-                    f.write("Neighbors: None\n")
+        df = pd.DataFrame(mesh_data)
 
-                f.write(f"Velocity (v): {cell._v}\n")
+        df.to_csv(filename, index = False)
 
-                if isinstance(cell, Sim_Cell):
-                    f.write(f"Midpoint: {cell._midpoint}\n")
-                    f.write(f"Area: {cell._area}\n")
-                    f.write(f"Oil Amount (u): {cell.get_amount_of_oil()}\n")
-                    f.write(f"Scaled Normals: {cell._scaled_normals}\n")
+        print(f"Data written to file {filename}.csv")
 
-                f.write("-" * 40 + "\n")
+    """def reconstruct_mesh(self, filename = "restartfile.csv")
+        
+        df = pd.read_csv(filename)
 
-        print(f"Data written to file {filename}")
+        reconstructed_cells = []
+
+        for index, row in df.iterrows():"""

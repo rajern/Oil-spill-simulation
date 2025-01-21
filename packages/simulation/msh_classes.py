@@ -28,7 +28,7 @@ class Cell(ABC):
     Input: cells id, cell points id, the orginal cell id'''
     def __init__(self, cell_index, cell_points_id, original_index):
         self._cell_index = cell_index
-        self._original_index = original_index  
+        self._original_index = original_index 
         self._cell_points_id = cell_points_id
         self._neighbors = [] #empty list for neigbor cells to be stored
         self._is_boundary = False #boundary statement is false by default
