@@ -127,17 +127,6 @@ class Sim_Triangle(Sim_Cell, Triangle):
             
         self._u = self._u + up
 
-    def is_inside(self, area:list):
-        
-        x, y = self._midpoint
-        
-        x_val = area[0]
-        y_val = area[1]
-
-        if min(x_val) <= x <= max(x_val)\
-        and min(y_val) <= y <= max(y_val):
-            self._inside_area = True
-
 
 
 class Sim_Mesh(Mesh):
@@ -147,6 +136,11 @@ class Sim_Mesh(Mesh):
     input: meshfile
     Reads in points and cells into lists that stores metadata needed for simulation 
     """
+
+    def __init__(self, msh):
+        super().__init__(msh)
+        self._points_inside_area = []
+
     def _create_cells(self, mesh_cells):
         """Reads cells metadata and stores in list"""
         all_cells = []
@@ -199,8 +193,15 @@ class Sim_Mesh(Mesh):
     def cells_inside_area(self, area:list):
         for cell in self._cells:
             if isinstance(cell, Sim_Triangle):
+                x, y = cell._midpoint
                 
-                cell.is_inside(area)
+                x_val = area[0]
+                y_val = area[1]
+
+                if min(x_val) <= x <= max(x_val)\
+                and min(y_val) <= y <= max(y_val):
+                    self._points_inside_area.append(cell._original_index)
+                    
 
     def store_mesh_sim(self, filename = "restartfile.txt"):
         with open(filename, "w") as f:
