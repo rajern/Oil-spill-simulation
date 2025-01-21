@@ -1,5 +1,27 @@
 import toml
+import argparse
 import os
+
+def parse_input():
+    parser = argparse.ArgumentParser(description = 'Simulation configuration')
+
+    # Add command-line arguments
+    parser.add_argument(
+        '--find_all', action='store_true', help = 'Find all config files in the main program folder'
+    )
+    parser.add_argument(
+        '-f', '--folder', help = 'Specify folder to search for config files', type=str   
+    )
+    parser.add_argument(
+        '-c', '--config_file', help = 'Specify a single config file to read', type=str
+    )
+    args = parser.parse_args()
+
+    find_all = args.find_all
+    folder = args.folder
+    config_file = args.config_file
+
+    return find_all, folder, config_file
 
 class ConfigReader:
     def __init__(self, file_path):
@@ -58,24 +80,3 @@ class ConfigReader:
         
     def get_value(self, section, key):
         return self.config[section].get(key) # config['settings'].get('nSteps') = 500 for example
-
-def parse_input():
-    parser = argparse.ArgumentParser(description = 'Simulation configuration')
-
-    # Add command-line arguments
-    parser.add_argument(
-        '--find_all', action='store_true', help = 'Find all config files in the main program folder'
-    )
-    parser.add_argument(
-        '-f', '--folder', help = 'Specify folder to search for config files', type=str   
-    )
-    parser.add_argument(
-        '-c', '--config_file', help = 'Specify a single config file to read', type=str
-    )
-    args = parser.parse_args()
-
-    find_all = args.find_all
-    folder = args.folder
-    config_file = args.config_file
-
-    return find_all, folder, config_file

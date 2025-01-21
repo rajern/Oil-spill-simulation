@@ -1,6 +1,7 @@
 from .msh_classes import Cell, Line, Triangle, Mesh
 import numpy as np
 import pandas as pd 
+import os
 
 
 def flux(u_i, u_ngh, normal, v):
@@ -203,7 +204,7 @@ class Sim_Mesh(Mesh):
                 and min(y_val) <= y <= max(y_val):
                     self._points_inside_area.append(cell._original_index)
                     
-    def store_mesh_sim(self, filename = "restartfile.csv"):
+    def store_mesh_sim(self, filename = "restartfile.csv", destination_folder = None):
         mesh_data = []
 
         for cell in self._cells:
@@ -223,10 +224,15 @@ class Sim_Mesh(Mesh):
             mesh_data.append(cell_data)
 
         df = pd.DataFrame(mesh_data)
+        
+        if filepath:
+            filepath = os.path.join(destination_folder, filename)
+        else:
+            filepath = filename
 
-        df.to_csv(filename, index = False)
+        df.to_csv(filepath, index = False)
 
-        print(f"Data written to file {filename}.csv")
+        print(f"Data written to file {filepath}.csv")
 
     """def reconstruct_mesh(self, filename = "restartfile.csv")
         
