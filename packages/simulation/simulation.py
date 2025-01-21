@@ -88,7 +88,6 @@ class Sim_Triangle(Sim_Cell, Triangle):
                     if np.isin(self._cell_points_id[i], shared_points) and np.isin(self._cell_points_id[j], shared_points):
                         # Store the scaled normal vector with the neighbor cell as the key
                         self._scaled_normals.append({neighbor_cell: scaled_normals})
-                        print({neighbor_cell: scaled_normals})  # print the scaled normal vector for debugging
 
 
     def __str__(self):  # prints info
@@ -163,23 +162,31 @@ class Sim_Mesh(Mesh):
             if isinstance(cell, Sim_Triangle):
                 
                 cell.area()
+        
+        print("Area calculated for all triangle cells in mesh")
     
     def store_midpoint(self):
         for cell in self._cells:
             
             cell.midpoint()
         
+        print("Midpoint calculated for all cells in mesh")
+        
     def initial_oil(self, x, y):
         for cell in self._cells:
             if isinstance(cell, Sim_Triangle):
                 
                 cell.u_0(x, y)
+
+        print("Initial oil calculated for all triangle cells in mesh")
     
     def flow_vector(self):
         for cell in self._cells:
                           
             cell.v()
-    
+
+        print("Flowfiels calculated for all cells in mesh")
+
     def update_oil(self, delta_t):
         for cell in self._cells:
             if isinstance(cell, Sim_Triangle):
@@ -192,6 +199,8 @@ class Sim_Mesh(Mesh):
                 
                 cell.scaled_normals()
 
+        print("Normals calculated for all cells in mesh")
+
     def cells_inside_area(self, area:list):
         for cell in self._cells:
             if isinstance(cell, Sim_Triangle):
@@ -203,6 +212,8 @@ class Sim_Mesh(Mesh):
                 if min(x_val) <= x <= max(x_val)\
                 and min(y_val) <= y <= max(y_val):
                     self._points_inside_area.append(cell._original_index)
+        
+        print("Cells inside area found")
                     
     def store_mesh_sim(self, filename = "restartfile.csv", destination_folder = None):
         mesh_data = []
@@ -232,7 +243,7 @@ class Sim_Mesh(Mesh):
 
         df.to_csv(filepath, index = False)
 
-        print(f"Data written to file {filepath}.csv")
+        print(f"Data stored and written to file {filepath}.csv")
 
     """def reconstruct_mesh(self, filename = "restartfile.csv")
         
