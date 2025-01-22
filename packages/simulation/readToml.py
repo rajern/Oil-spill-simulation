@@ -65,9 +65,6 @@ class ConfigReader:
         if 'logName' not in IO:
             IO['logName'] = 'logfile'
 
-        """restart_file = 'restartFile' in IO and IO['restartFile']
-        start_time = 'tStart' in settings and settings['tStart'] > 0"""
-
         restart_file = IO.get('restartFile')
         start_time = settings.get('tStart', 0) > 0
 
@@ -80,7 +77,6 @@ class ConfigReader:
             raise ValueError('If restart file is provided start time must also be.')
         if start_time and not restart_file: 
             raise ValueError('If start time is provided restart file must also be.')
-
 
         write_frequency = IO.get('writeFrequency', 0) # Sets writeFrequency to 0 if it is undefined
         if not isinstance(write_frequency, (int, float)) or write_frequency <= 0: 
