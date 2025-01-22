@@ -173,7 +173,6 @@ def test_find_neighbors():
     triangle_cell = mesh._cells[4]  # First triangle
     assert len(triangle_cell._neighbors) > 0  # Should have neighbors
 
-
 def test_full_mesh_setup():
     """
     Test the full mesh setup process
