@@ -358,7 +358,7 @@ class Sim_Mesh(Mesh):
 
         print(f"Data stored and written to file {filepath}.csv")
 
-def reconstruct_mesh(self, filename = "restartfile.csv"):
+def reconstruct_mesh(filename = "restartfile.csv"):
         
     df = pd.read_csv(filename)
 
