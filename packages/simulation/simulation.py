@@ -356,14 +356,14 @@ class Sim_Mesh(Mesh):
         df = pd.DataFrame(mesh_data) # Creating a DataFrame from the mesh data
         
         # Defining the filepath
-        if filepath:
-            filepath = os.path.join(destination_folder, filename)
+        if destination_folder:
+            destination_folder = os.path.join(destination_folder, filename)
         else:
-            filepath = filename
+            destination_folder = filename
 
-        df.to_csv(filepath, index = False) # Writing the DataFrame to a csv file for more compact file storage.
+        df.to_csv(destination_folder, index = False) # Writing the DataFrame to a csv file for more compact file storage.
 
-        l.info(f"Data stored and written to file {filepath}.csv")
+        l.info(f"Data stored and written to file {destination_folder}.csv")
 
 def reconstruct_mesh(filename = "restartfile.csv"):
     """
