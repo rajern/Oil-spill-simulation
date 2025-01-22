@@ -2,12 +2,18 @@ import os
 import meshio as m
 import numpy as np
 import matplotlib.pyplot as plt
+import logging
 from packages.simulation.msh_classes import *
 from packages.simulation.simulation import *
 from packages.simulation.plot_animation import *
 from packages.simulation.readToml import *
+from packages.simulation.logger import *
 
 if __name__ == "__main__":
+    """
+    Main function to run the simulation.
+    """
+    # Parse input arguments
     find_all, folder, config_file = parse_input()
 
     if config_file:
@@ -69,6 +75,10 @@ if __name__ == "__main__":
             print(f"Log Name: {log_name}, Write Frequency: {write_frequency}")
             if restart_file:
                 print(f"Restart File: {restart_file}")
+            
+            make_logger(log_name,results_folder)
+            log_sim_parameters(n_steps, t_start, t_end, mesh_name, borders, write_frequency, restart_file)
+
 
             # Initialize mesh and set up simulation
             msh = m.read(mesh_name)

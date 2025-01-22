@@ -6,3 +6,4 @@ argparse
 toml
 matplotlib
 pytest
+logging
