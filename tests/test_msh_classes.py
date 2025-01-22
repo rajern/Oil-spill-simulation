@@ -2,8 +2,9 @@ import pytest
 import meshio
 from packages.simulation.msh_classes import Point, Cell, Line, Triangle, Mesh
 
-
-# Testing the Point class
+"""
+Tests for Point class
+"""
 sample_points = [(1, 2), (2, 3), (3, 4), (4, 5)]  # This simulates mesh points coordinates
 
 def test_point_x():
@@ -27,6 +28,7 @@ def test_point_repr():
     repr_str = repr(point)
     assert repr_str == "Point(index=0, x=1.00, y=2.00)"  
 
+'''
 #code from lecture: chech if you are detecting errors correctly
 @pytest.mark.parametrize( " input1 , input2 ",
                               [(1 , 0) ,
@@ -36,8 +38,11 @@ def testDivision(input1 , input2 ):
     with pytest.raises(ZeroDivisionError) as excinfo :
         a = input1 / input2
         assert str( excinfo . value) == " division by zero "
+'''
 
-# Testing the Cell class
+"""
+Tests for Cell class
+"""
 def test_cell_factory_line():
     """ 
     Creating line cell using the cell_factory
@@ -79,8 +84,10 @@ def test_get_point_coord():
     line_cell.get_point_coord(mesh_points)
     assert line_cell._coordinates == [(1, 2), (2, 3)]
 
-# Testing the Line class
 
+"""
+Testing the Line class
+"""
 def test_line_neighbors():
     """
     Test the store_neighbors method of the Line class when the line has one neighbor
@@ -93,7 +100,6 @@ def test_line_neighbors():
     line1.store_neighbors([line1, line2, line3])
     assert line1._neighbors == [1]  # Line1 is neighbors with Line2
 
-#hvorfor er denne feil, skal ikke denne ha to neighbors??
 def test_line_neighbors_two():
     """
     Test the store_neighbors method of the Line class if the line has two neighbors
@@ -107,8 +113,9 @@ def test_line_neighbors_two():
     assert line2._neighbors == [2, 0] or [0, 2]
 
 
-
-# Testing the Triangle class
+"""
+Testing the Triangle class
+"""
 def test_triangle_neighbors():
     """
     Test the store_neighbors method of the Triangle class
@@ -119,7 +126,10 @@ def test_triangle_neighbors():
     triangle1.store_neighbors([triangle1, triangle2])
     assert triangle1._neighbors == [{1: [1, 2]}]  # Triangle1 shares points 1 and 2 with Triangle2
 
-# Testing the Mesh class
+
+"""
+Testing the Mesh class
+"""
 def create_example_mesh():
     """
     Create an example mesh with 4 points, 1 line cell, and 1 triangle cell
