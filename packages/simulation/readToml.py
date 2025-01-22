@@ -65,8 +65,15 @@ class ConfigReader:
         if 'logName' not in IO:
             IO['logName'] = 'logfile'
 
-        restart_file = 'restartFile' in IO and IO['restartFile']
-        start_time = 'tStart' in settings and settings['tStart'] > 0
+        """restart_file = 'restartFile' in IO and IO['restartFile']
+        start_time = 'tStart' in settings and settings['tStart'] > 0"""
+
+        restart_file = IO.get('restartFile')
+        start_time = settings.get('tStart', 0) > 0
+
+        # Validate restartFile existence
+        if restart_file and not os.path.exists(restart_file):
+            raise ValueError(f'Restart file {restart_file} does not exist.')
 
         if restart_file and not start_time:
             raise ValueError('If restart file is provided start time must also be.')
