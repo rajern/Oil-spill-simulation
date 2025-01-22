@@ -201,9 +201,8 @@ class Mesh:
         A function that stores the neighbors of the cells in the mesh in the _cells list.
         Uses the store_neighbors function.
         """
-        for cell in self._cells:
+        for cell in self._cells:                
             if isinstance(cell, Triangle):
-            
                 cell.store_neighbors(self._cells)
-
+            
         print("Neighbors for cells computed")
