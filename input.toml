@@ -2,7 +2,7 @@
 [settings]
 nSteps = 500 # Number of time steps
 tStart = 0.1 #Start time
-tEnd = 0.2 # End time
+tEnd = 1.5 # End time
 
 [geometry]
 meshName = "input_data/bay.msh"
