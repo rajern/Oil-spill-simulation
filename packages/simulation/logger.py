@@ -2,10 +2,17 @@ import logging as l
 import os
 
 def make_logger(filename, destination_folder = None):
+    """
+    A function to create a logger object. 
+    The logger object is used to write information to a log file specified by the filename.
+    """
     l.basicConfig(filename=f"{os.path.join(destination_folder,filename)}.log",\
                   level=l.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def log_sim_parameters(n_steps, t_start, t_end, mesh_name, borders, writefrequency, restartfile=None):
+    """
+    A function to log the simulation parameters to the log file.
+    """
     l.info('Simulation prameters\n')
     l.info(f"Mesh: {mesh_name}")
     if restartfile: 
@@ -18,4 +25,7 @@ def log_sim_parameters(n_steps, t_start, t_end, mesh_name, borders, writefrequen
     l.info(f"Fishing area: {borders}\n")
 
 def log_oil_area(amount, time=None):
+    """
+    A function to log the amount of oil in the area at a specific time.
+    """
     l.info(f"Amount of oil in area at time {time}: {amount}")
