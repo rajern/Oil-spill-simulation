@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import os
 import ast
+import logging as l
 
 def flux(u_i, u_ngh, normal, v):
     """
@@ -257,6 +258,9 @@ class Sim_Mesh(Mesh):
             for idx, cell_points_id in enumerate(cell_data): # idx is id for cell in blocktype
                 all_cells.append(Sim_Cell.cell_factory(cell_type, idx, cell_points_id, orginal_cell_id))
                 orginal_cell_id += 1
+        
+        l.info('Cells read into Sim_Mesh')
+
         return all_cells
 
     def store_area(self):
@@ -266,7 +270,7 @@ class Sim_Mesh(Mesh):
         for cell in self._cells:
             if isinstance(cell, Sim_Triangle):
                 cell.area()
-        print("Area calculated for all triangle cells in mesh")
+        l.info("Area calculated for all triangle cells in mesh")
     
     def store_midpoint(self):
         """
@@ -274,7 +278,7 @@ class Sim_Mesh(Mesh):
         """
         for cell in self._cells:
             cell.midpoint()
-        print("Midpoint calculated for all cells in mesh")
+        l.info("Midpoint calculated for all cells in mesh")
         
     def initial_oil(self, x, y):
         """
@@ -283,7 +287,7 @@ class Sim_Mesh(Mesh):
         for cell in self._cells:
             if isinstance(cell, Sim_Triangle):    
                 cell.u_0(x, y)
-        print("Initial oil calculated for all triangle cells in mesh")
+        l.info("Initial oil calculated for all triangle cells in mesh")
     
     def flow_vector(self):
         """
@@ -291,7 +295,7 @@ class Sim_Mesh(Mesh):
         """
         for cell in self._cells:          
             cell.v()
-        print("Flowfiels calculated for all cells in mesh")
+        l.info("Flowfiels calculated for all cells in mesh")
 
     def update_oil(self, delta_t):
         """
@@ -308,7 +312,7 @@ class Sim_Mesh(Mesh):
         for cell in self._cells:
             if isinstance(cell, Sim_Triangle):
                 cell.scaled_normals()
-        print("Normals calculated for all cells in mesh")
+        l.info("Normals calculated for all cells in mesh")
 
     def cells_inside_area(self, area:list):
         """
@@ -325,7 +329,7 @@ class Sim_Mesh(Mesh):
                 and min(y_val) <= y <= max(y_val):
                     self._points_inside_area.append(cell._original_index)
         
-        print("Cells inside area found")
+        l.info("Cells inside area found")
                     
     def store_mesh_sim(self, destination_folder = None, filename = "restartfile.csv"):
         """
@@ -356,7 +360,7 @@ class Sim_Mesh(Mesh):
 
         df.to_csv(filepath, index = False)
 
-        print(f"Data stored and written to file {filepath}.csv")
+        l.info(f"Data stored and written to file {filepath}.csv")
 
 def reconstruct_mesh(filename = "restartfile.csv"):
         
@@ -391,7 +395,7 @@ def reconstruct_mesh(filename = "restartfile.csv"):
     # Assuming mesh object has a _cells attribute that holds the list of cells
     self._cells = reconstructed_cells
 
-    print(f"Mesh successfully reconstructed from {filename}")
+    l.info(f"Mesh successfully reconstructed from {filename}")
 
     reconstructed_mesh = Sim_Mesh(msh=None)  
     reconstructed_mesh._cells = reconstructed_cells 

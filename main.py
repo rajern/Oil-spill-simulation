@@ -72,10 +72,10 @@ if __name__ == "__main__":
             if restart_file:
                 print(f"Restart File: {restart_file}")
             
-            logging.basicConfig(filename=os.path.join(results_folder,log_name), level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+            make_logger(log_name,results_folder)
             log_sim_parameters(n_steps, t_start, t_end, mesh_name, borders, write_frequency, restart_file)
 
-            
+
             # Initialize mesh and set up simulation
             msh = m.read(mesh_name)
             mesh = Sim_Mesh(msh)

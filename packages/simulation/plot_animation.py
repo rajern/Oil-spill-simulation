@@ -1,7 +1,9 @@
 from packages.simulation.simulation import *
+from packages.simulation.logger import *
 import os
 import matplotlib.pyplot as plt
 import cv2  # requires opencv-python
+import logging as l
 
 
 def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t: float, box_coords: list = None):
@@ -36,10 +38,9 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
     for pic in range(nr_of_pics):
         plt.figure()
         ax = plt.gca()
-
-        u_in_area.append(
-            sum(mesh._cells[cell_in_area].get_amount_of_oil() for cell_in_area in mesh._points_inside_area)
-            )
+        u_area_at_time = sum(mesh._cells[cell_in_area].get_amount_of_oil() for cell_in_area in mesh._points_inside_area)
+        u_in_area.append(u_area_at_time)
+        log_oil_area(u_area_at_time)
 
         # Create the colormap
         sm = plt.cm.ScalarMappable(cmap="viridis")
@@ -87,7 +88,7 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
         # Close the plot to avoid memory issues
         plt.close()
 
-        print(f"Plot nr. {pic} of {nr_of_pics} has been plotted")
+        l.info(f"Plot nr. {pic+1} of {nr_of_pics} has been plotted\n")
         
         # Update oil distribution
         for timestep in range(N):
@@ -108,8 +109,8 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
     oil_in_area_plot_path = os.path.join(destination_folder, 'oil_in_area_over_time.png')
     plt.savefig(oil_in_area_plot_path)
 
-    # Show the plot
-    plt.show()
+    # Close the plot to avoid memory issues
+    plt.close()
 
     print(f"Total oil in area over time: {u_in_area}")
 
