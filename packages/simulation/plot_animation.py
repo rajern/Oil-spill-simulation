@@ -124,14 +124,14 @@ def animation(folder: str, img_name: str, nr_of_pics: int):
     nr_of_pics: int, the number of images to be included in the video
     """
     # Get the list of image files in the directory
-    images = [f"./{folder}/images/{img_name}{i}.png" for i in range(0, nr_of_pics)]
+    images = [f"{folder}/images/{img_name}{i}.png" for i in range(0, nr_of_pics)]
     # determine dimension from first image
     print(f"{len(images)} frames to be animated")
     frame = cv2.imread(images[0])
     height, width, layers = frame.shape
     # Define the codec and create a VideoWriter object
     fourcc = cv2.VideoWriter_fourcc(*'DIVX')  # or 'XVID', 'DIVX', 'mp4v' etc.
-    video = cv2.VideoWriter("video.AVI", fourcc, 5, (width, height))  # 5 frames per second
+    video = cv2.VideoWriter(f"{folder}/video.AVI", fourcc, 5, (width, height))  # 5 frames per second
     for image in images:
         video.write(cv2.imread(image))
     cv2.destroyAllWindows()
