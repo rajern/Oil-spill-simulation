@@ -94,7 +94,9 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
         for timestep in range(N):
             mesh.update_oil(delta_t)
             count += 1
-            print(f"Simulation timestep {count} of {timesteps}")
+    
+    # logs max amount of oil in the area
+    l.info(f"Max amount of oil in area: {max(u_in_area)}")  
 
     # Create the plot
     plt.figure()
