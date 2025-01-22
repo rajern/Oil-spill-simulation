@@ -35,7 +35,7 @@ if __name__ == "__main__":
         search_folder = folder
         config_files = []
         for file in os.listdir(search_folder):
-            if file.endswith('.toml'): 
+            if file.endswith('.toml'):
                 config_files.append(os.path.join(search_folder, file)) # Os.path.join() ensures file gets a proper path
             if not config_files: 
                 raise ValueError(f'No config files found in folder {search_folder}')
@@ -60,7 +60,6 @@ if __name__ == "__main__":
             n_steps = config_reader.get_value("settings", "nSteps")
             t_start = config_reader.get_value("settings", "tStart")
             t_end = config_reader.get_value("settings", "tEnd")
-            delta_t = (t_end - t_start) / n_steps # Add delta_t for later
 
             mesh_name = config_reader.get_value("geometry", "meshName")
             borders = config_reader.get_value("geometry", "borders") # Fishing grounds
@@ -96,7 +95,7 @@ if __name__ == "__main__":
             mesh.cells_inside_area(fishing_bay)
 
             # Run simulation and generate outputs
-            plot(mesh, results_folder, write_frequency, n_steps, delta_t, fishing_bay)
+            plot(mesh, results_folder, write_frequency, n_steps, t_start, t_end, fishing_bay)
             animation(results_folder, "mesh_timestep_", write_frequency)
             
             while True:

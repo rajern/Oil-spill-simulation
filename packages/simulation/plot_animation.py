@@ -6,7 +6,7 @@ import cv2  # requires opencv-python
 import logging as l
 
 
-def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t: float, box_coords: list = None):
+def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, t_start: float, t_end:float, box_coords: list = None):
     """
     A function that plots the mesh at different timesteps and saves the plots as images.
     The function also creates a plot of the oil concentration in the specified area over time.
@@ -26,6 +26,7 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
     count: int, the number of timesteps
     N: int, the number of timesteps per image
     """
+    delta_t = (t_end - t_start) / timesteps # Add delta_t for later
     N = int(timesteps/nr_of_pics)
 
     umax = max(cell.get_amount_of_oil() for cell in mesh._cells if isinstance(cell, Sim_Triangle))
@@ -33,6 +34,7 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
     
     u_in_area = []
     count = 0
+    time = t_start
 
     # Iterate through time steps and plot the mesh
     for pic in range(nr_of_pics):
@@ -75,6 +77,9 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
         plt.ylabel("Y-coordinate")
         ax.set_aspect("equal", adjustable="box")
 
+        # Title with time
+        plt.title(f"Mesh at Time = {time:.2f}")
+
         # Save the plot
         results_folder = f"{destination_folder}/images"
 
@@ -94,14 +99,17 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
         for timestep in range(N):
             mesh.update_oil(delta_t)
             count += 1
+        time += delta_t * N
+             
     
     # logs max amount of oil in the area
     l.info(f"Max amount of oil in area: {max(u_in_area)}")  
 
     # Create the plot
     plt.figure()
-    plt.plot(np.arange(len(u_in_area)), u_in_area, color='blue', label='Oil in Area')
-    plt.xlabel('Timestep')
+    times = np.arange(len(u_in_area)) * delta_t * N + t_start
+    plt.plot(times, u_in_area, color='blue', label='Oil in Area')
+    plt.xlabel('Time')
     plt.ylabel('Oil Concentration (u) in Area')
     plt.title('Oil Concentration Over Time in Specified Area')
     plt.grid(True)
@@ -113,8 +121,6 @@ def plot(mesh, destination_folder: str, nr_of_pics: int, timesteps: int, delta_t
 
     # Close the plot to avoid memory issues
     plt.close()
-
-    print(f"Total oil in area over time: {u_in_area}")
 
 
 def animation(folder: str, img_name: str, nr_of_pics: int):
