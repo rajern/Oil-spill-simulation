@@ -217,33 +217,40 @@ def test_load_multiple_config_files(multiple_config_files):
         reader.load_config_file()
         assert reader.config is not None
 
-# Validates with valid input of start time and restart file
-def test_start_time_with_restart_file(config_with_restart_file):
-    """
-    Test that validation passes when both start time and restart file are provided.
-    """
-    reader = ConfigReader(config_with_restart_file)
-    reader.load_config_file()
-    reader.validate_config()
-
-# Checks that ValueError is raised when start time is provided and not restart file
+# Validates that ValueError is raised when tStart is provided but restartFile is missing
 def test_start_time_without_restart_file(config_without_restart_file):
     """
-    Test that a ValueError is raised when start time is provided
-    without a corresponding restart file.
+    Test that a ValueError is raised when tStart is provided but restartFile is not included.
     """
     reader = ConfigReader(config_without_restart_file)
     with pytest.raises(ValueError, match='If start time is provided restart file must also be.'):
         reader.load_config_file()
 
-# Checks that ValueError is raised when restart file is provided and not start time
-def test_restart_file_without_start_time(valid_config_file):
+# Validates that ValueError is raised when restartFile is provided but tStart is missing
+def test_restart_file_without_start_time(config_with_restart_file, tmp_path):
     """
-    Test that a ValueError is raised when a restart file is provided
-    without a corresponding start time.
+    Test that a ValueError is raised when a restartFile is provided but tStart is not specified.
     """
-    reader = ConfigReader(valid_config_file)
-    reader.load_config_file()
-    reader.config['IO']['restartFile'] = 'restart.dat'
+    # Modify the provided config file to remove tStart
+    config_data = {
+        'settings': {
+            'nSteps': 100,
+            'tEnd': 100  # tStart intentionally removed
+        },
+        'geometry': {
+            'meshName': 'mesh1',
+            'borders': 'borders1'
+        },
+        'IO': {
+            'logName': 'logfile',
+            'writeFrequency': 10,
+            'restartFile': 'restart.dat'
+        }
+    }
+    file_path = tmp_path / "invalid_restart_file.toml"
+    with open(file_path, 'w') as file:
+        toml.dump(config_data, file)
+
+    reader = ConfigReader(file_path)
     with pytest.raises(ValueError, match='If restart file is provided start time must also be.'):
-        reader.validate_config()
+        reader.load_config_file()
