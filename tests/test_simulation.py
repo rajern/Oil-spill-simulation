@@ -24,8 +24,6 @@ def sim_triangle():
     triangle.area()  
     return triangle
 
-
-
 @pytest.fixture
 def sim_line():
     # Mocking a Sim_Line object with 2 points
@@ -36,14 +34,12 @@ def sim_line():
 
 
 # Testing the flux function
-
 def test_flux_positive_normal():
     # Test for positive flux when np.dot(v, normal) > 0
     u_i = 10
     u_ngh = 5
     normal = np.array([1, 0])  # Positive direction
     v = np.array([1, 0])  # Velocity vector in the positive direction
-    
     flux_value = flux(u_i, u_ngh, normal, v)
     assert flux_value == 10, f"Expected flux: 10, but got: {flux_value}"
 
@@ -54,7 +50,6 @@ def test_flux_negative_normal():
     u_ngh = 5
     normal = np.array([1, 0])  # Positive direction
     v = np.array([-1, 0])  # Velocity vector in the negative direction
-    
     flux_value = flux(u_i, u_ngh, normal, v)
     assert flux_value == -5, f"Expected flux: 5, but got: {flux_value}"
 
@@ -70,8 +65,6 @@ def test_sim_cell():
 def test_sim_line_midpoint(sim_line: Sim_Line):
     # Test the midpoint calculation for the Sim_Line class
     assert sim_line._midpoint == [0.5, 0.5], f"Expected midpoint: [0.5, 0.5], but got: {sim_line._midpoint}"
-
-# Additional test cases for Sim_Mesh and related classes
 
 # Testing Sim_Triangle calculations
 def test_sim_triangle_area():
@@ -96,3 +89,5 @@ def test_sim_line_velocity(sim_line: Sim_Line):
     sim_line.v()
     expected_velocity = [0.5 - 0.2 * 0.5, -0.5]  # [y-0.2*x, -x] at midpoint (0.5, 0.5)
     assert np.allclose(sim_line._v, expected_velocity), f"Expected velocity: {expected_velocity}, but got: {sim_line._v}"
+
+# Additional test cases for Sim_Mesh and related classes

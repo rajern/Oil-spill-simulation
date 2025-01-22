@@ -1,5 +1,4 @@
 import pytest
-import os
 import toml
 from packages.simulation.readToml import ConfigReader
 
