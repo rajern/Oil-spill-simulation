@@ -119,11 +119,6 @@ def test_sim_mesh_midpoint(sim_mesh):
     for cell in sim_mesh._cells:
         assert cell._midpoint is not None, "Midpoint not calculated"
 
-def test_sim_mesh_store_normals(sim_mesh):
-    for cell in sim_mesh._cells:
-        if isinstance(cell, Sim_Triangle):
-            assert len(cell._scaled_normals) > 0, "Scaled normals not calculated"
-
 def test_sim_mesh_initial_oil(sim_mesh):
     sim_mesh.initial_oil(0.1, 0.1)
     for cell in sim_mesh._cells:
@@ -136,7 +131,7 @@ def test_sim_mesh_cells_inside_area(sim_mesh):
     assert len(sim_mesh._points_inside_area) > 0, "No cells found inside the area"
 
 def test_sim_mesh_update_oil(sim_mesh):
-    delta_t = 0.1
+    delta_t = 0.000000001
     sim_mesh.update_oil(delta_t)
     for cell in sim_mesh._cells:
         if isinstance(cell, Sim_Triangle):

@@ -12,10 +12,9 @@ class Point:
         """
         Stores the points id's and their coordinates in the Point class.
 
-        Paramteres: 
+        Parameters: 
         points: list of point coordinates from mesh
         point_index: index of the points
-
         """
         self._point_index = point_index
         self._x, self._y = points[point_index][:2] #2D mesh
@@ -32,26 +31,28 @@ class Cell(ABC):
         """
         Stores the cell id, cell points id, original cell id, neighbours and coordinates in the Cell class.
 
-        Paramteres:
+        Paramtres:
         cell_index: index of the cell
         cell_points_id: id of the cell points
         original_index: original index of the cell (same as cell_index)
-
         """
         self._cell_index = cell_index
         self._original_index = original_index 
         self._cell_points_id = cell_points_id
         self._neighbors = [] #empty list for neigbor cells to be stored
         self._is_boundary = False #boundary statement is false by default
-
         self._coordinates = []
         
 
-    #@abstractmethod #Requires all child classes of Cell to have this func, or it's not valid
+    #@abstractmethod 
     def store_neighbors(self, all_cells):
+        """
+        Abstract method for storing the neighbors of the cells in the mesh.
+        Requires all child classes of Cell to have this func, or it's not valid
+        """
         pass
 
-    @staticmethod #cell factory for all types of cells 
+    @staticmethod
     def cell_factory(cell_type, cell_index, cell_points_id, original_index):
         """
         Factory method for creating cells.
@@ -92,7 +93,6 @@ class Cell(ABC):
         Parameters:
         mesh_points: list of points in mesh
         """
-
         self._coordinates = [self.point_coord(point_id, mesh_points) for point_id in self._cell_points_id]
         
 
@@ -108,24 +108,23 @@ class Line(Cell):
         Parameters:
         all_cells: list of all cells in the mesh
         """
-        for other_cell in all_cells: #checks all cells in mesh
-            if self._original_index != other_cell._original_index: #ensures diff. cells
-                shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) #hashes for pair points of cells
-                if isinstance(other_cell, Line) and len(shared_points) == 1: #if more or equal to 1 shared point, the other cell is a neighbor
-                    self._neighbors.append(other_cell._original_index) #adds to list
+        for other_cell in all_cells: # Checks all cells in mesh
+            if self._original_index != other_cell._original_index: # Ensures different cells
+                shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) # Hashes for pair points of cells
+                if isinstance(other_cell, Line) and len(shared_points) == 1: # If more or equal to 1 shared point, the other cell is a neighbor
+                    self._neighbors.append(other_cell._original_index) # Adds to _neighbors list
                     self._is_boundary = True
                     
                 elif len(shared_points) == 2:
-                    self._neighbors.append(other_cell._original_index) #adds to list
+                    self._neighbors.append(other_cell._original_index) # Adds to _neighbors list
 
-    def __str__(self): #prints info
+    def __str__(self): # Prints info
         return f"Line {self._original_index}, Boundary: {self._is_boundary}, Neighbors: {self._neighbors}"
 
 class Triangle(Cell): 
     """
     Child class of the Cell class that stores the Triangle Cells.
     """
-
     def store_neighbors(self, all_cells):
         """
         A function that stores the neighbors of the Triangle Cells.
@@ -134,17 +133,17 @@ class Triangle(Cell):
         Parameters:
         all_cells: list of all cells in the mesh
         """
-        for other_cell in all_cells: #checks all cells in mesh
-            if self._original_index != other_cell._original_index: #checks diff. cell
-                shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) #hashes for pair points of cells
-                if len(shared_points) == 2: #if equal to 2 shared points, the othe cell is a neighbor
+        for other_cell in all_cells: # Checks all cells in mesh
+            if self._original_index != other_cell._original_index: # Checks if the cells are different
+                shared_points = set(self._cell_points_id) & set(other_cell._cell_points_id) # Hashes for pair points of cells
+                if len(shared_points) == 2: # If equal to 2 shared points, the other cell is a neighbor
                     shared_points=list(shared_points)
-                    self._neighbors.append({other_cell._original_index: shared_points}) #adds to list
+                    self._neighbors.append({other_cell._original_index: shared_points}) # Adds to list
 
-                    if len(self._neighbors) == 3:
+                    if len(self._neighbors) == 3: # If 3 neighbors, breaks loop
                         break
         
-    def __str__(self): #prints info
+    def __str__(self): # Prints info
         return f"Triangle {self._original_index}, Oil: {self.get_amount_of_oil()} Normals:{self._scaled_normals} Neighbors:{self._neighbors} Velocity:{self.get_flowfield()}"
 
         
@@ -174,11 +173,12 @@ class Mesh:
         all_cells = []
         orginal_cell_id = 0
         for cell_block in mesh_cells: 
-            cell_type = cell_block.type  # Access the type of the cell (e.g., "triangle", "line")
-            if cell_type == "vertex":
+            cell_type = cell_block.type  # Access the type of the cell
+            if cell_type == "vertex": # Skips vertex cells
                 continue
             cell_data = cell_block.data  # Access the array of cell points
-            """uses metadata to utilize cell factory for each cell type"""
+            
+            # Uses metadata to utilize cell factory for each cell type
             for idx, cell_points_id in enumerate(cell_data): # idx is id for cell in blocktype
                 all_cells.append(Cell.cell_factory(cell_type, idx, cell_points_id, orginal_cell_id))
                 orginal_cell_id += 1
@@ -187,13 +187,10 @@ class Mesh:
     def store_coordinates(self):
         """
         A function that stores the x-, y-coordinates of the cell points in the _points list.
-
         Uses the get_point_coord function.
         """
-        for cell in self._cells:
-            
+        for cell in self._cells: 
             cell.get_point_coord(self._points)
-        
         print("Coordinates stored in all cells")
     
     def find_neighbors(self):
@@ -203,7 +200,5 @@ class Mesh:
         """
         for cell in self._cells:
             if isinstance(cell, Triangle):
-            
                 cell.store_neighbors(self._cells)
-
         print("Neighbors for cells computed")

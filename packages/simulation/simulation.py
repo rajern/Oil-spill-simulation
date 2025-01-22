@@ -6,8 +6,9 @@ import ast
 
 def flux(u_i, u_ngh, normal, v):
     """
-    A function that calculates the flux value. 
-    It checks if the velocity vector is in the same direction as the normal vector, and if so, returns the flux value.
+    A function that calculates the flux value by determining the relationship between the velocity vector
+    and the normal vector. If the velocity vector points in the same direction as the normal vector, it 
+    calculates and returns the flux value based on the oil quantity in the current cell.
     
     Parameters:
     u_i: amount of oil in cell i at time t_n
@@ -112,30 +113,31 @@ class Sim_Triangle(Sim_Cell, Triangle):
         For each pair of pointers, calculate the normal vector, orthonormal vector, and scaled normal vector.
         Check if the scaled normal vector is pointing in the correct direction and store it with the neighbor cell.
         """
-        pointer1 = [0,1,2]
-        pointer2 = [1,2,0]
+        pointer1 = [0,1,2] # Pointers to the first, second, and third points in the triangle
+        pointer2 = [1,2,0] # Pointers to the second, third, and first points in the triangle
         midpoint = self._midpoint
 
-        for i,j in zip(pointer1, pointer2):
-            p_j = self._coordinates[j]
-            p_i = self._coordinates[i]
-            e_vector = np.subtract(p_j, p_i)
+        for i,j in zip(pointer1, pointer2): 
+            p_j = self._coordinates[j] # Coordinates of the second point in the triangle
+            p_i = self._coordinates[i] # Coordinates of the first point in the triangle
+            e_vector = np.subtract(p_j, p_i) # Edge vector between the first and second points in the triangle
             normal = [e_vector[1], -e_vector[0]]  # [e[1], -e[0]] = [dy, -dx]
-            orthonormal = normal / np.linalg.norm(normal)
+            orthonormal = normal / np.linalg.norm(normal) # Normalized normal vector
 
-            check_vector = np.subtract(p_i, midpoint)
-            scaled_normals = orthonormal * np.linalg.norm(e_vector)
-            if np.dot(orthonormal, check_vector) < 0:
+            check_vector = np.subtract(p_i, midpoint) # Vector between the first point and the midpoint
+            scaled_normals = orthonormal * np.linalg.norm(e_vector) # Scaled normal vector
+            if np.dot(orthonormal, check_vector) < 0: # Flip the scaled normal vector if it points in the wrong direction
                 scaled_normals = np.flip(scaled_normals)
             
-            for ngh in self._neighbors:
-                for neighbor_cell, shared_points in ngh.items():
+            # Loop to store the scaled normal vector with the neighbor cell id as the key
+            for ngh in self._neighbors: # Loop through the neighbors list of dictionaries
+                for neighbor_cell, shared_points in ngh.items(): # Loop through the dictionary items
                     if np.isin(self._cell_points_id[i], shared_points) and np.isin(self._cell_points_id[j], shared_points):
                         # Store the scaled normal vector with the neighbor cell as the key
                         self._scaled_normals.append({neighbor_cell: scaled_normals})
 
 
-    def __str__(self):  # prints info
+    def __str__(self):  # Prints info
         return f"Triangle {self._original_index}, Oil: {self.get_amount_of_oil()}\
              Normals:{self._scaled_normals} Neighbors:{self._neighbors} Velocity:{self.get_flowfield()}"
     
@@ -217,9 +219,7 @@ class Sim_Triangle(Sim_Cell, Triangle):
         self._u = self._u + up
 
 
-
 class Sim_Mesh(Mesh):
-    #make a list of cell ids that are inside the area to append to
     """
     Class for simulation mesh. Inherits from its parents class; Mesh from the msh_classes file.
     """
@@ -248,12 +248,13 @@ class Sim_Mesh(Mesh):
         all_cells = []
         orginal_cell_id = 0
         for cell_block in mesh_cells: 
-            cell_type = cell_block.type  # Access the type of the cell (e.g., "triangle", "line")
-            if cell_type == "vertex":
+            cell_type = cell_block.type  # Access the type of the cell
+            if cell_type == "vertex": # Skips vertex cells
                 continue
 
             cell_data = cell_block.data  # Access the array of cell points
-            """uses metadata to utilize cell factory for each cell type"""
+            
+            # Uses metadata to utilize cell factory for each cell type
             for idx, cell_points_id in enumerate(cell_data): # idx is id for cell in blocktype
                 all_cells.append(Sim_Cell.cell_factory(cell_type, idx, cell_points_id, orginal_cell_id))
                 orginal_cell_id += 1
@@ -331,8 +332,9 @@ class Sim_Mesh(Mesh):
         """
         A function that stores the mesh data in a csv file to make it easier to restart the simulation at a chosen time.
         """
-        mesh_data = []
-        for cell in self._cells:
+        mesh_data = [] # List to store the data for each cell in the mesh
+        for cell in self._cells: # Loop through all cells in the mesh
+            # Defining the data to be stored in the csv file
             cell_data = {
                 'cell_index': cell._cell_index,
                 'orginal_cell_index': cell._original_index,
@@ -347,22 +349,27 @@ class Sim_Mesh(Mesh):
             }
             mesh_data.append(cell_data)
 
-        df = pd.DataFrame(mesh_data)
+        df = pd.DataFrame(mesh_data) # Creating a DataFrame from the mesh data
         
+        # Defining the filepath
         if filepath:
             filepath = os.path.join(destination_folder, filename)
         else:
             filepath = filename
 
-        df.to_csv(filepath, index = False)
+        df.to_csv(filepath, index = False) # Writing the DataFrame to a csv file for more compact file storage.
 
         print(f"Data stored and written to file {filepath}.csv")
 
+
 def reconstruct_mesh(self, filename = "restartfile.csv"):
+    """
+    A function that makes it possible to reconstruct the mesh from a csv file.
+    """
         
     df = pd.read_csv(filename)
 
-    reconstructed_cells = []
+    reconstructed_cells = [] # List to store the reconstructed cells
 
     for index, row in df.iterrows():
         cell_type = row['cell_type']

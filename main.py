@@ -8,6 +8,10 @@ from packages.simulation.plot_animation import *
 from packages.simulation.readToml import *
 
 if __name__ == "__main__":
+    """
+    Main function to run the simulation.
+    """
+    # Parse input arguments
     find_all, folder, config_file = parse_input()
 
     if config_file:
