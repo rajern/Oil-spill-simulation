@@ -73,7 +73,9 @@ class ConfigReader:
 
         # Validate restartFile existence
         if restart_file and not os.path.exists(restart_file):
-            raise ValueError(f'Restart file {restart_file} does not exist.')
+            settings['tStart'] = 0
+            print('Continues with tStart = 0')
+            # raise ValueError(f'Restart file {restart_file} does not exist.')
 
         if restart_file and not start_time:
             raise ValueError('If restart file is provided start time must also be.')
