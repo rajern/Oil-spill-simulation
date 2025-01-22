@@ -28,18 +28,6 @@ def test_point_repr():
     repr_str = repr(point)
     assert repr_str == "Point(index=0, x=1.00, y=2.00)"  
 
-'''
-#code from lecture: chech if you are detecting errors correctly
-@pytest.mark.parametrize( " input1 , input2 ",
-                              [(1 , 0) ,
-                               (2 , 0) ,
-                               (3.1 , 0) ])
-def testDivision(input1 , input2 ):
-    with pytest.raises(ZeroDivisionError) as excinfo :
-        a = input1 / input2
-        assert str( excinfo . value) == " division by zero "
-'''
-
 """
 Tests for Cell class
 """
@@ -157,7 +145,7 @@ def test_mesh_initialization():
     assert len(mesh._points) == 4 # the four points created in the example mesh
     assert len(mesh._cells) == 6  # 4 lines + 2 triangles
 
-# Step 3: Test Storing Coordinates
+
 def test_store_coordinates():
     """ 
     Test the store_coordinates method of the Mesh class
@@ -171,7 +159,7 @@ def test_store_coordinates():
     for cell in mesh._cells:
         assert len(cell._coordinates) == len(cell._cell_points_id)
 
-# Step 4: Test Finding Neighbors
+
 def test_find_neighbors():
     """
     Test the find_neighbors method of the Mesh class
