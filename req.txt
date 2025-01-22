@@ -1,9 +1,9 @@
+argparse
+logging
+matplotlib
 meshio
 numpy
 opencv-python
 pandas
-argparse
-toml
-matplotlib
 pytest
-logging
+toml
