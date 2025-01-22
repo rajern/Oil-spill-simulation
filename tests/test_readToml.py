@@ -5,6 +5,11 @@ from packages.simulation.readToml import ConfigReader
 # Creates valid config file for testing
 @pytest.fixture
 def valid_config_file(tmp_path):
+    """
+    Fixture to create a valid configuration file for testing.
+    The file includes all necessary sections and keys.
+    Returns the path to the created file.
+    """
     config_data = {
         'settings': {
             'nSteps': 100,
@@ -28,6 +33,11 @@ def valid_config_file(tmp_path):
 # Creates invalid config file for testing
 @pytest.fixture
 def invalid_config_file(tmp_path):
+    """
+    Fixture to create an invalid configuration file for testing.
+    The file is missing required sections or keys.
+    Returns the path to the created file.
+    """
     config_data = {
         'settings': {
             'nSteps': 100
@@ -44,6 +54,11 @@ def invalid_config_file(tmp_path):
 # Creates a config file with restartFile and tStart
 @pytest.fixture
 def config_with_restart_file(tmp_path):
+    """
+    Fixture to create a configuration file that includes both
+    'restartFile' and 'tStart' for testing specific validation cases.
+    Returns the path to the created file.
+    """
     config_data = {
         'settings': {
             'nSteps': 100,
@@ -68,6 +83,11 @@ def config_with_restart_file(tmp_path):
 # Creates config file with tStart, but without restartFile
 @pytest.fixture
 def config_without_restart_file(tmp_path):
+    """
+    Fixture to create a configuration file that includes 'tStart'
+    but does not include 'restartFile', to test validation failures.
+    Returns the path to the created file.
+    """
     config_data = {
         'settings': {
             'nSteps': 100,
@@ -91,6 +111,11 @@ def config_without_restart_file(tmp_path):
 # Creates multiple config files
 @pytest.fixture
 def multiple_config_files(tmp_path):
+    """
+    Fixture to create multiple configuration files with slight variations
+    for testing scenarios involving multiple files.
+    Returns a list of file paths.
+    """
     file_paths = []
     for i in range(3):
         config_data = {
@@ -116,30 +141,47 @@ def multiple_config_files(tmp_path):
 
 # Testing that valid config file loads correctly
 def test_load_config_file(valid_config_file):
+    """
+    Test that the configuration file loads correctly when it is valid.
+    """
     reader = ConfigReader(valid_config_file)
     reader.load_config_file()
     assert reader.config is not None
 
 # Testing that FileNotFoundError is raised for missing config file
 def test_load_config_file_missing_file():
+    """
+    Test that a FileNotFoundError is raised when attempting to load
+    a non-existent config file.
+    """
     reader = ConfigReader("non_existent.toml")
     with pytest.raises(FileNotFoundError):
         reader.load_config_file()
 
 # Testing for validate_config method with a valid config file
 def test_validate_config_valid_file(valid_config_file):
+    """
+    Test that the validate_config method works correctly for a valid config file.
+    """
     reader = ConfigReader(valid_config_file)
     reader.load_config_file()
     reader.validate_config()
 
 # Ensures validation fails for invalid config file
 def test_validate_config_invalid_file(invalid_config_file):
+    """
+    Test that the validate_config method raises a ValueError
+    when the config file is missing required sections or keys.
+    """
     reader = ConfigReader(invalid_config_file)
     with pytest.raises(ValueError, match="missing required section"):
         reader.load_config_file()
 
-# Tests get_value method with valid a valid key
+# Tests get_value method with a valid key
 def test_get_value(valid_config_file):
+    """
+    Test that the get_value method correctly retrieves a value for a valid key.
+    """
     reader = ConfigReader(valid_config_file)
     reader.load_config_file()
     n_steps = reader.get_value('settings', 'nSteps')
@@ -147,6 +189,9 @@ def test_get_value(valid_config_file):
 
 # Tests get_value method with a missing key
 def test_get_value_missing_key(valid_config_file):
+    """
+    Test that the get_value method returns None when the key is missing.
+    """
     reader = ConfigReader(valid_config_file)
     reader.load_config_file()
     value = reader.get_value('settings', 'missingKey')
@@ -154,6 +199,9 @@ def test_get_value_missing_key(valid_config_file):
 
 # Checks that KeyError is raised for a missing section
 def test_get_value_missing_section(valid_config_file):
+    """
+    Test that the get_value method raises a KeyError when the section is missing.
+    """
     reader = ConfigReader(valid_config_file)
     reader.load_config_file()
     with pytest.raises(KeyError):
@@ -161,6 +209,9 @@ def test_get_value_missing_section(valid_config_file):
 
 # Test for loading and validating multiple config files
 def test_load_multiple_config_files(multiple_config_files):
+    """
+    Test that multiple config files can be loaded and validated correctly.
+    """
     for file_path in multiple_config_files:
         reader = ConfigReader(file_path)
         reader.load_config_file()
@@ -168,18 +219,29 @@ def test_load_multiple_config_files(multiple_config_files):
 
 # Validates with valid input of start time and restart file
 def test_start_time_with_restart_file(config_with_restart_file):
+    """
+    Test that validation passes when both start time and restart file are provided.
+    """
     reader = ConfigReader(config_with_restart_file)
     reader.load_config_file()
     reader.validate_config()
 
 # Checks that ValueError is raised when start time is provided and not restart file
 def test_start_time_without_restart_file(config_without_restart_file):
+    """
+    Test that a ValueError is raised when start time is provided
+    without a corresponding restart file.
+    """
     reader = ConfigReader(config_without_restart_file)
     with pytest.raises(ValueError, match='If start time is provided restart file must also be.'):
         reader.load_config_file()
 
 # Checks that ValueError is raised when restart file is provided and not start time
 def test_restart_file_without_start_time(valid_config_file):
+    """
+    Test that a ValueError is raised when a restart file is provided
+    without a corresponding start time.
+    """
     reader = ConfigReader(valid_config_file)
     reader.load_config_file()
     reader.config['IO']['restartFile'] = 'restart.dat'
