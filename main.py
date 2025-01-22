@@ -1,8 +1,5 @@
 import os
 import meshio as m
-import numpy as np
-import matplotlib.pyplot as plt
-import logging
 from packages.simulation.msh_classes import *
 from packages.simulation.simulation import *
 from packages.simulation.plot_animation import *
@@ -92,11 +89,11 @@ if __name__ == "__main__":
             x, y = 0.35, 0.45
             mesh.initial_oil(x, y)
             mesh.store_area()
-            fishing_bay = borders
-            mesh.cells_inside_area(fishing_bay)
+            fishing_grounds = borders
+            mesh.cells_inside_area(fishing_grounds)
 
             # Run simulation and generate outputs
-            plot(mesh, results_folder, write_frequency, n_steps, delta_t, fishing_bay)
+            plot(mesh, results_folder, write_frequency, n_steps, delta_t, fishing_grounds)
             animation(results_folder, "mesh_timestep_", write_frequency)
             
             while True:
