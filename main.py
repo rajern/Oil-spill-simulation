@@ -98,7 +98,19 @@ if __name__ == "__main__":
             # Run simulation and generate outputs
             plot(mesh, results_folder, write_frequency, n_steps, delta_t, fishing_bay)
             animation(results_folder, "mesh_timestep_", write_frequency)
-            mesh.store_mesh_sim(results_folder)
+            
+            while True:
+                choice = input("Do you want to store the mesh in current state? (y/n): ").strip().lower()
+                if choice in ['y', 'n']:
+                    break
+                else:
+                    print("Invalid input. Please enter 'y' for yes or 'n' for no.")
+
+            if choice == 'y':
+                mesh.store_mesh_sim(results_folder)
+                print("Mesh is stored")
+            else:
+                print("Mesh is not stored")
 
         except Exception as e:
             print(f"Error processing {config_file}: {e}")
