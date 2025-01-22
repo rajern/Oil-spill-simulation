@@ -1,4 +1,5 @@
 import meshio
+import logging as l
 from abc import ABC, abstractmethod
 """
 This file provides basic definition and storing of the classes Point, Cell, Line and Triangle.
@@ -191,7 +192,8 @@ class Mesh:
         """
         for cell in self._cells: 
             cell.get_point_coord(self._points)
-        print("Coordinates stored in all cells")
+        
+        l.info("Coordinates stored in all cells")
     
     def find_neighbors(self):
         """
@@ -201,4 +203,5 @@ class Mesh:
         for cell in self._cells:
             if isinstance(cell, Triangle):
                 cell.store_neighbors(self._cells)
-        print("Neighbors for cells computed")
+
+        l.info("Neighbors for cells computed")
