@@ -5,3 +5,4 @@ pandas
 argparse
 toml
 matplotlib
+pytest
