@@ -358,38 +358,42 @@ class Sim_Mesh(Mesh):
 
         print(f"Data stored and written to file {filepath}.csv")
 
-    def reconstruct_mesh(self, filename = "restartfile.csv"):
+def reconstruct_mesh(self, filename = "restartfile.csv"):
         
-        df = pd.read_csv(filename)
+    df = pd.read_csv(filename)
 
-        reconstructed_cells = []
+    reconstructed_cells = []
 
-        for index, row in df.iterrows():
-            cell_type = row['cell_type']
-            coordinates = ast.literal_eval(row['coordinates'])  # Convert string back to list of tuples
-            neighbors = ast.literal_eval(row['neighbors']) if row['neighbors'] != "None" else None
-            velocity = np.array(ast.literal_eval(row['velocity']))  # Convert string to numpy array
-            midpoint = ast.literal_eval(row['midpoint']) if pd.notna(row['midpoint']) else None
-            area = row['area']
-            oil_amount = row['oil_amount']
-            scaled_normals = ast.literal_eval(row['scaled_normals']) if pd.notna(row['scaled_normals']) else None
+    for index, row in df.iterrows():
+        cell_type = row['cell_type']
+        coordinates = ast.literal_eval(row['coordinates'])  # Convert string back to list of tuples
+        neighbors = ast.literal_eval(row['neighbors']) if row['neighbors'] != "None" else None
+        velocity = np.array(ast.literal_eval(row['velocity']))  # Convert string to numpy array
+        midpoint = ast.literal_eval(row['midpoint']) if pd.notna(row['midpoint']) else None
+        area = row['area']
+        oil_amount = row['oil_amount']
+        scaled_normals = ast.literal_eval(row['scaled_normals']) if pd.notna(row['scaled_normals']) else None
 
-            # Create the correct type of cell (e.g., Sim_Triangle or Sim_Line)
-            if cell_type == "Sim_Triangle":
-                cell = Sim_Triangle(coordinates, velocity, neighbors, midpoint, area, oil_amount, scaled_normals)
-            elif cell_type == "Sim_Line":
-                cell = Sim_Line(coordinates, velocity, neighbors, midpoint, area, oil_amount, scaled_normals)
-            # Add more cell types as necessary
+        # Create the correct type of cell (e.g., Sim_Triangle or Sim_Line)
+        if cell_type == "Sim_Triangle":
+            cell = Sim_Triangle(coordinates, velocity, neighbors, midpoint, area, oil_amount, scaled_normals)
+        elif cell_type == "Sim_Line":
+            cell = Sim_Line(coordinates, velocity, neighbors, midpoint, area, oil_amount, scaled_normals)
+        # Add more cell types as necessary
 
-            # Set the attributes based on the row data
-            cell._cell_index = row['cell_index']
-            cell._original_index = row['original_index']
+        # Set the attributes based on the row data
+        cell._cell_index = row['cell_index']
+        cell._original_index = row['original_index']
 
-            # Append the reconstructed cell to the list
-            reconstructed_cells.append(cell)
+        # Append the reconstructed cell to the list
+        reconstructed_cells.append(cell)
 
-        # Assuming mesh object has a _cells attribute that holds the list of cells
-        self._cells = reconstructed_cells
+    # Assuming mesh object has a _cells attribute that holds the list of cells
+    self._cells = reconstructed_cells
 
-        print(f"Mesh successfully reconstructed from {filename}")
+    print(f"Mesh successfully reconstructed from {filename}")
+
+    reconstructed_mesh = Sim_Mesh(msh=None)  
+    reconstructed_mesh._cells = reconstructed_cells 
+    return reconstructed_mesh
 
