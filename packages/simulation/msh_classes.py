@@ -1,4 +1,3 @@
-import meshio
 import logging as l
 from abc import ABC, abstractmethod
 """
@@ -45,7 +44,7 @@ class Cell(ABC):
         self._coordinates = []
         
 
-    #@abstractmethod 
+    @abstractmethod 
     def store_neighbors(self, all_cells):
         """
         Abstract method for storing the neighbors of the cells in the mesh.
