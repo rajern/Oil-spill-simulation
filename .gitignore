@@ -1,0 +1,22 @@
+# Python bytecode and test caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Virtual environments and local configuration
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Editor and operating-system files
+.DS_Store
+.vscode/
+.idea/
+
+# Runtime output
+*.log
+test_output/
+test_animation_output/

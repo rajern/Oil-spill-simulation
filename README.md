@@ -1,93 +1,106 @@
-# Computational mesh
+# Oil Spill Simulation on a Computational Mesh
 
+This repository contains an educational simulation of an oil spill moving through the flow field around the fictional coastal area "Bay City". The area is represented as a triangular computational mesh. Oil transport is estimated from cell geometry, outward normals, neighboring cells, and a prescribed velocity field.
 
+The project was developed as a three-person group assignment in INF202 at the Norwegian University of Life Sciences (NMBU) in January 2025. It is an academic model, not a tool for real-world environmental forecasting.
 
-## Getting started
+![Saved simulation output at timestep 9](input/images/mesh_timestep_9.png)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Course submission and portfolio history
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+The original development and collaboration history was preserved from the group's GitLab repository. The annotated tag [`course-submission`](../../tree/course-submission) identifies the tracked Canvas submission, with generated caches and local log files excluded.
 
-## Add your files
+The `portfolio` branch continues from that point. Changes after the tag are portfolio maintenance or clearly identified post-submission improvements; they are not presented as part of the original course delivery.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+- [Course report (PDF)](Group8ReportSimulationofanoilspill.pdf)
+- [Original GitLab repository](https://gitlab.com/inf202gr8/computational-mesh)
 
+## Result
+
+The submitted model predicted that part of the oil spill would reach the defined fishing grounds. The course report records a maximum value of 30 in the fishing-ground measurement produced by the simulation. This result depends on the assignment's simplified flow field, numerical model, mesh, and parameter choices.
+
+## Team and contributions
+
+All members contributed as developers and worked collaboratively. The summaries below are based on the report and the preserved commit history; they describe recurring areas of work rather than exclusive ownership.
+
+| Team member | Contribution summary |
+| --- | --- |
+| Ingrid Vestvik | Simulation and mesh testing, validation work, documentation and docstrings, and dependency maintenance. |
+| Elias Sigurd Kroken | Core mesh and simulation development, plotting and animation, logging, generated outputs, and integration work. |
+| Rajvir Singh Aujla | Configuration and TOML handling, entry-point integration, mesh and simulation tests, restructuring, and post-submission portfolio maintenance. |
+
+## Project structure
+
+```text
+.
+|-- input.toml                    # Example simulation configuration
+|-- input_data/bay.msh            # Triangular mesh and flow-field input
+|-- main.py                       # Command-line entry point
+|-- packages/simulation/
+|   |-- logger.py                 # Runtime logging
+|   |-- msh_classes.py            # Mesh primitives and relationships
+|   |-- plot_animation.py         # Images, plots, and video output
+|   |-- readToml.py               # CLI and TOML configuration
+|   `-- simulation.py             # Oil transport and simulation logic
+|-- tests/                        # Pytest test suite
+`-- requirements.txt             # Python dependencies
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/inf202gr8/computational-mesh.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gitlab.com/inf202gr8/computational-mesh/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
 
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+The project was developed with Python 3.11. Other Python versions have not yet been verified.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+```bash
+python -m venv .venv
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+Activate the virtual environment using the command appropriate for your shell before installing dependencies or running the project.
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+## Running the simulation
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+Run the default configuration:
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+```bash
+python main.py
+```
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+Run one selected TOML configuration:
 
-## License
-For open source projects, say how it is licensed.
+```bash
+python main.py -c input.toml
+```
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Find every TOML file in the current directory:
+
+```bash
+python main.py --find_all
+```
+
+Find every TOML file in another directory:
+
+```bash
+python main.py --find_all -f ./configs
+```
+
+The output directory is derived from the configuration filename. For example, `input.toml` writes images, a log, plots, video, and optional restart data under `input/`. The program asks interactively whether the final mesh state should be stored.
+
+## Tests
+
+```bash
+python -m pytest
+```
+
+The tests cover important configuration, mesh, flux, and simulation behavior, but they are not a complete verification of every numerical routine.
+
+## Known limitations from the course submission
+
+- The implemented meaning of `writeFrequency` differs from the intended assignment interpretation.
+- `reconstruct_mesh` does not reliably reconstruct arrays stored as strings in restart data.
+- Test coverage is incomplete.
+- The simulation uses a simplified prescribed flow field and should not be interpreted as a physical risk assessment.
+
+## Post-submission changes
+
+The first post-submission source commit made imports more explicit, adjusted mesh initialization order, restored an abstract method declaration, removed an unused import, and clarified documentation. Later portfolio commits improve repository documentation, configuration defaults, and dependency metadata. The `course-submission` tag remains the reference for the delivered version.

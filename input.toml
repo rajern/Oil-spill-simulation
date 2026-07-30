@@ -1,7 +1,7 @@
 #  Example configuration file. Split into Section -> Key -> Value
 [settings]
 nSteps = 500 # Number of time steps
-tStart = 0.1 #Start time
+tStart = 0.0 # Start a new simulation from the initial oil distribution
 tEnd = 1.5 # End time
 
 [geometry]
@@ -11,5 +11,4 @@ borders = [ [0.0, 0.45], [0.0, 0.2]] # Define where fish are located
 [IO]
 logName = "log" # Name of the log file created
 writeFrequency = 10 # Frequency of output video. If not provided, no video is recorded
-restartFile = "input/solution.txt" # Restart file must be provided if start time is provided
 
