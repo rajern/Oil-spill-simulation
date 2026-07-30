@@ -19,16 +19,6 @@ The `portfolio` branch continues from that point. Changes after the tag are port
 
 The submitted model predicted that part of the oil spill would reach the defined fishing grounds. The course report records a maximum value of 30 in the fishing-ground measurement produced by the simulation. This result depends on the assignment's simplified flow field, numerical model, mesh, and parameter choices.
 
-## Team and contributions
-
-All members contributed as developers and worked collaboratively. The summaries below are based on the report and the preserved commit history; they describe recurring areas of work rather than exclusive ownership.
-
-| Team member | Contribution summary |
-| --- | --- |
-| Ingrid Vestvik | Simulation and mesh testing, validation work, documentation and docstrings, and dependency maintenance. |
-| Elias Sigurd Kroken | Core mesh and simulation development, plotting and animation, logging, generated outputs, and integration work. |
-| Rajvir Singh Aujla | Configuration and TOML handling, entry-point integration, mesh and simulation tests, restructuring, and post-submission portfolio maintenance. |
-
 ## Project structure
 
 ```text
