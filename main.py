@@ -1,10 +1,10 @@
 import os
 import meshio as m
-from packages.simulation.msh_classes import *
-from packages.simulation.simulation import *
-from packages.simulation.plot_animation import *
-from packages.simulation.readToml import *
-from packages.simulation.logger import *
+from packages.simulation.simulation import Sim_Mesh
+from packages.simulation.plot_animation import plot, animation
+from packages.simulation.readToml import parse_input, ConfigReader
+from packages.simulation.logger import make_logger, log_sim_parameters
+
 
 if __name__ == "__main__":
     """
@@ -82,12 +82,14 @@ if __name__ == "__main__":
 
             mesh.store_coordinates()
             mesh.store_midpoint()
+            mesh.store_area()
             mesh.find_neighbors()
             mesh.normal()
             mesh.flow_vector()
+
             x, y = 0.35, 0.45
             mesh.initial_oil(x, y)
-            mesh.store_area()
+
             fishing_grounds = borders
             mesh.cells_inside_area(fishing_grounds)
 

@@ -12,10 +12,12 @@ def flux(u_i, u_ngh, normal, v):
     calculates and returns the flux value based on the oil quantity in the current cell.
     
     Parameters:
-    u_i: amount of oil in cell i at time t_n
-    u_ngh : amount of oil in cell ngh at time t_n
-    normal: normal of cell i at edge e
-    v: velocity field at edge e
+        u_i: amount of oil in current cell.
+        u_ngh : amount of oil in the neighboring cell.
+        normal: normal of cell i at edge e
+        v: velocity field at edge e
+    Returns: 
+        Flux value based on direction of flow. 
     """
     if np.dot(v, normal) > 0:
         return u_i * np.dot(v , normal)
